@@ -1,0 +1,510 @@
+/* Crypto Portfolio Tracker - Dashboard Styles */
+/* Asegurar que nuestros estilos tengan prioridad sobre Divi */
+
+#crypto-portfolio-dashboard {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
+  box-sizing: border-box !important;
+}
+
+#crypto-portfolio-dashboard *,
+#crypto-portfolio-dashboard *::before,
+#crypto-portfolio-dashboard *::after {
+  box-sizing: border-box !important;
+}
+
+/* Reset específico para evitar conflictos con Divi */
+#crypto-portfolio-dashboard h1,
+#crypto-portfolio-dashboard h2,
+#crypto-portfolio-dashboard h3,
+#crypto-portfolio-dashboard h4,
+#crypto-portfolio-dashboard h5,
+#crypto-portfolio-dashboard h6 {
+  margin: 0 !important;
+  padding: 0 !important;
+  font-weight: inherit !important;
+  line-height: inherit !important;
+}
+
+#crypto-portfolio-dashboard p {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+#crypto-portfolio-dashboard div {
+  margin: 0 !important;
+  padding: 0 !important;
+}
+
+/* Container principal */
+#crypto-portfolio-dashboard .cpt-dashboard-container {
+  min-height: 100vh !important;
+  background: linear-gradient(135deg, #0f172a 0%, #581c87 50%, #0f172a 100%) !important;
+  padding: 1.5rem !important;
+  margin: 0 !important;
+  width: 100% !important;
+  overflow-x: hidden !important;
+}
+
+#crypto-portfolio-dashboard .cpt-max-width {
+  max-width: 1200px !important;
+  margin: 0 auto !important;
+  width: 100% !important;
+}
+
+/* Espaciado */
+#crypto-portfolio-dashboard .cpt-space-y-6 > * + * {
+  margin-top: 1.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-space-y-4 > * + * {
+  margin-top: 1rem !important;
+}
+
+/* Header */
+#crypto-portfolio-dashboard .cpt-header {
+  text-align: center !important;
+  margin-bottom: 2rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-title {
+  font-size: 2.5rem !important;
+  font-weight: 800 !important;
+  background: linear-gradient(135deg, #ffffff, #a855f7) !important;
+  -webkit-background-clip: text !important;
+  -webkit-text-fill-color: transparent !important;
+  background-clip: text !important;
+  margin-bottom: 0.5rem !important;
+  line-height: 1.2 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-subtitle {
+  color: #c4b5fd !important;
+  font-size: 1.125rem !important;
+  font-weight: 400 !important;
+}
+
+/* Cards con glassmorphism */
+#crypto-portfolio-dashboard .cpt-glass-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border: 1px solid rgba(139, 92, 246, 0.2) !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  transition: all 0.3s ease !important;
+}
+
+#crypto-portfolio-dashboard .cpt-glass-card:hover {
+  background: rgba(255, 255, 255, 0.15) !important;
+  border: 1px solid rgba(139, 92, 246, 0.4) !important;
+  transform: translateY(-2px) !important;
+}
+
+/* Grid layouts */
+#crypto-portfolio-dashboard .cpt-grid {
+  display: grid !important;
+  gap: 1.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-grid-4 {
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-grid-2 {
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr)) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-grid-cols-2 {
+  grid-template-columns: repeat(2, 1fr) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-grid-cols-3 {
+  grid-template-columns: repeat(3, 1fr) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-grid-cols-4 {
+  grid-template-columns: repeat(4, 1fr) !important;
+}
+
+/* Flex utilities */
+#crypto-portfolio-dashboard .cpt-flex {
+  display: flex !important;
+}
+
+#crypto-portfolio-dashboard .cpt-flex-col {
+  flex-direction: column !important;
+}
+
+#crypto-portfolio-dashboard .cpt-items-center {
+  align-items: center !important;
+}
+
+#crypto-portfolio-dashboard .cpt-justify-between {
+  justify-content: space-between !important;
+}
+
+#crypto-portfolio-dashboard .cpt-justify-center {
+  justify-content: center !important;
+}
+
+#crypto-portfolio-dashboard .cpt-gap-4 {
+  gap: 1rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-gap-6 {
+  gap: 1.5rem !important;
+}
+
+/* Stats cards con efectos especiales */
+#crypto-portfolio-dashboard .cpt-stats-card {
+  background: rgba(255, 255, 255, 0.1) !important;
+  backdrop-filter: blur(16px) !important;
+  -webkit-backdrop-filter: blur(16px) !important;
+  border-radius: 12px !important;
+  padding: 1.5rem !important;
+  border: 1px solid !important;
+  transition: all 0.3s ease !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stats-card:hover {
+  transform: translateY(-2px) !important;
+  box-shadow: 0 10px 25px rgba(0, 0, 0, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stats-card.green {
+  background: linear-gradient(135deg, rgba(34, 197, 94, 0.2), rgba(16, 185, 129, 0.2)) !important;
+  border-color: rgba(34, 197, 94, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stats-card.blue {
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(6, 182, 212, 0.2)) !important;
+  border-color: rgba(59, 130, 246, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stats-card.red {
+  background: linear-gradient(135deg, rgba(239, 68, 68, 0.2), rgba(236, 72, 153, 0.2)) !important;
+  border-color: rgba(239, 68, 68, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stats-card.purple {
+  background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(99, 102, 241, 0.2)) !important;
+  border-color: rgba(139, 92, 246, 0.3) !important;
+}
+
+/* Texto de stats */
+#crypto-portfolio-dashboard .cpt-stat-label {
+  color: rgba(255, 255, 255, 0.7) !important;
+  font-size: 0.875rem !important;
+  font-weight: 500 !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stat-value {
+  color: white !important;
+  font-size: 1.875rem !important;
+  font-weight: 700 !important;
+  line-height: 1.2 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-stat-icon {
+  color: rgba(255, 255, 255, 0.8) !important;
+  font-size: 2rem !important;
+}
+
+/* Colores específicos para stats */
+#crypto-portfolio-dashboard .cpt-stat-label.green { color: rgba(34, 197, 94, 0.8) !important; }
+#crypto-portfolio-dashboard .cpt-stat-label.blue { color: rgba(59, 130, 246, 0.8) !important; }
+#crypto-portfolio-dashboard .cpt-stat-label.red { color: rgba(239, 68, 68, 0.8) !important; }
+#crypto-portfolio-dashboard .cpt-stat-label.purple { color: rgba(139, 92, 246, 0.8) !important; }
+
+#crypto-portfolio-dashboard .cpt-stat-icon.green { color: rgba(34, 197, 94, 0.9) !important; }
+#crypto-portfolio-dashboard .cpt-stat-icon.blue { color: rgba(59, 130, 246, 0.9) !important; }
+#crypto-portfolio-dashboard .cpt-stat-icon.red { color: rgba(239, 68, 68, 0.9) !important; }
+#crypto-portfolio-dashboard .cpt-stat-icon.purple { color: rgba(139, 92, 246, 0.9) !important; }
+
+/* Botones */
+#crypto-portfolio-dashboard .cpt-btn {
+  padding: 0.75rem 1.5rem !important;
+  border-radius: 0.5rem !important;
+  font-weight: 600 !important;
+  transition: all 0.3s ease !important;
+  cursor: pointer !important;
+  border: none !important;
+  font-size: 0.875rem !important;
+  text-decoration: none !important;
+  display: inline-block !important;
+  text-align: center !important;
+}
+
+#crypto-portfolio-dashboard .cpt-btn-primary {
+  background: linear-gradient(135deg, #7c3aed, #a855f7) !important;
+  color: white !important;
+}
+
+#crypto-portfolio-dashboard .cpt-btn-primary:hover {
+  background: linear-gradient(135deg, #6d28d9, #9333ea) !important;
+  transform: translateY(-1px) !important;
+  box-shadow: 0 10px 25px rgba(124, 58, 237, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-btn-secondary {
+  background: rgba(75, 85, 99, 0.6) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  color: white !important;
+}
+
+#crypto-portfolio-dashboard .cpt-btn-secondary:hover {
+  background: rgba(75, 85, 99, 0.8) !important;
+  border-color: rgba(139, 92, 246, 0.5) !important;
+}
+
+/* Tablas */
+#crypto-portfolio-dashboard .cpt-table {
+  width: 100% !important;
+  border-collapse: collapse !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 8px !important;
+  overflow: hidden !important;
+}
+
+#crypto-portfolio-dashboard .cpt-table th {
+  background: rgba(139, 92, 246, 0.2) !important;
+  color: white !important;
+  font-weight: 600 !important;
+  text-transform: uppercase !important;
+  font-size: 0.875rem !important;
+  letter-spacing: 0.05em !important;
+  padding: 0.75rem !important;
+  text-align: left !important;
+  border: none !important;
+}
+
+#crypto-portfolio-dashboard .cpt-table th.text-right {
+  text-align: right !important;
+}
+
+#crypto-portfolio-dashboard .cpt-table td {
+  padding: 0.75rem !important;
+  color: white !important;
+  border-bottom: 1px solid rgba(139, 92, 246, 0.1) !important;
+  border-left: none !important;
+  border-right: none !important;
+  border-top: none !important;
+}
+
+#crypto-portfolio-dashboard .cpt-table td.text-right {
+  text-align: right !important;
+}
+
+#crypto-portfolio-dashboard .cpt-table tbody tr:hover {
+  background: rgba(139, 92, 246, 0.1) !important;
+}
+
+/* Colores de profit/loss */
+#crypto-portfolio-dashboard .cpt-profit-positive {
+  color: #34d399 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-profit-negative {
+  color: #f87171 !important;
+}
+
+/* Formularios */
+#crypto-portfolio-dashboard .cpt-input {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  color: white !important;
+  width: 100% !important;
+  transition: all 0.3s ease !important;
+  font-size: 0.875rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-input:focus {
+  outline: none !important;
+  border-color: rgba(139, 92, 246, 0.8) !important;
+  box-shadow: 0 0 0 3px rgba(139, 92, 246, 0.1) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-input::placeholder {
+  color: rgba(203, 213, 225, 0.6) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-select {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  color: white !important;
+  width: 100% !important;
+  font-size: 0.875rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-textarea {
+  background: rgba(30, 41, 59, 0.8) !important;
+  border: 1px solid rgba(139, 92, 246, 0.3) !important;
+  border-radius: 0.5rem !important;
+  padding: 0.75rem 1rem !important;
+  color: white !important;
+  width: 100% !important;
+  resize: vertical !important;
+  min-height: 80px !important;
+  font-size: 0.875rem !important;
+}
+
+/* Loading spinner */
+#crypto-portfolio-dashboard .cpt-loading-spinner {
+  width: 2rem !important;
+  height: 2rem !important;
+  border: 3px solid rgba(139, 92, 246, 0.3) !important;
+  border-top: 3px solid #7c3aed !important;
+  border-radius: 50% !important;
+  animation: cpt-spin 1s linear infinite !important;
+}
+
+@keyframes cpt-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
+/* Utility classes */
+#crypto-portfolio-dashboard .cpt-text-center {
+  text-align: center !important;
+}
+
+#crypto-portfolio-dashboard .cpt-text-white {
+  color: white !important;
+}
+
+#crypto-portfolio-dashboard .cpt-text-xl {
+  font-size: 1.25rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-text-2xl {
+  font-size: 1.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-font-bold {
+  font-weight: 700 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-font-medium {
+  font-weight: 500 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-mb-2 {
+  margin-bottom: 0.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-mb-4 {
+  margin-bottom: 1rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-mb-6 {
+  margin-bottom: 1.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-mb-8 {
+  margin-bottom: 2rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-mt-4 {
+  margin-top: 1rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-p-4 {
+  padding: 1rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-p-6 {
+  padding: 1.5rem !important;
+}
+
+/* Empty state */
+#crypto-portfolio-dashboard .cpt-empty-state {
+  text-align: center !important;
+  padding: 3rem 2rem !important;
+  background: rgba(255, 255, 255, 0.05) !important;
+  border-radius: 1rem !important;
+  border: 2px dashed rgba(139, 92, 246, 0.3) !important;
+}
+
+#crypto-portfolio-dashboard .cpt-empty-icon {
+  font-size: 3rem !important;
+  margin-bottom: 1rem !important;
+  opacity: 0.6 !important;
+}
+
+#crypto-portfolio-dashboard .cpt-empty-title {
+  font-size: 1.5rem !important;
+  font-weight: 600 !important;
+  color: white !important;
+  margin-bottom: 0.5rem !important;
+}
+
+#crypto-portfolio-dashboard .cpt-empty-description {
+  color: #c4b5fd !important;
+  margin-bottom: 1.5rem !important;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+  #crypto-portfolio-dashboard .cpt-dashboard-container {
+    padding: 1rem !important;
+  }
+  
+  #crypto-portfolio-dashboard .cpt-title {
+    font-size: 2rem !important;
+  }
+  
+  #crypto-portfolio-dashboard .cpt-grid-4,
+  #crypto-portfolio-dashboard .cpt-grid-2 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  #crypto-portfolio-dashboard .cpt-grid-cols-2,
+  #crypto-portfolio-dashboard .cpt-grid-cols-3,
+  #crypto-portfolio-dashboard .cpt-grid-cols-4 {
+    grid-template-columns: 1fr !important;
+  }
+  
+  #crypto-portfolio-dashboard .cpt-stat-value {
+    font-size: 1.5rem !important;
+  }
+}
+
+/* Animaciones */
+#crypto-portfolio-dashboard .cpt-fade-in {
+  animation: cpt-fadeIn 0.5s ease-in !important;
+}
+
+@keyframes cpt-fadeIn {
+  from { 
+    opacity: 0; 
+    transform: translateY(20px); 
+  }
+  to { 
+    opacity: 1; 
+    transform: translateY(0); 
+  }
+}
+
+/* Scrollbar personalizada */
+#crypto-portfolio-dashboard .cpt-scrollable::-webkit-scrollbar {
+  width: 6px !important;
+}
+
+#crypto-portfolio-dashboard .cpt-scrollable::-webkit-scrollbar-track {
+  background: rgba(75, 85, 99, 0.3) !important;
+  border-radius: 3px !important;
+}
+
+#crypto-portfolio-dashboard .cpt-scrollable::-webkit-scrollbar-thumb {
+  background: rgba(139, 92, 246, 0.6) !important;
+  border-radius: 3px !important;
+}
+
+#crypto-portfolio-dashboard .cpt-scrollable::-webkit-scrollbar-thumb:hover {
+  background: rgba(139, 92, 246, 0.8) !important;
+}
