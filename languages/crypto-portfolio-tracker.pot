@@ -1,0 +1,138 @@
+# Copyright (C) 2024 Emigdio Salvador Corado
+# This file is distributed under the GPL v2 or later.
+msgid ""
+msgstr ""
+"Project-Id-Version: Crypto Portfolio Tracker 1.0.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugin/crypto-portfolio-tracker\n"
+"POT-Creation-Date: 2024-12-15 12:00+0000\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"PO-Revision-Date: 2024-MO-DA HO:MI+ZONE\n"
+"Last-Translator: FULL NAME <EMAIL@ADDRESS>\n"
+"Language-Team: LANGUAGE <LL@li.org>\n"
+"Language: \n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+"X-Generator: WordPress\n"
+
+#: crypto-portfolio-tracker.php:87
+msgid "Crypto Portfolio"
+msgstr ""
+
+#: crypto-portfolio-tracker.php:94
+msgid "Settings"
+msgstr ""
+
+#: crypto-portfolio-tracker.php:166
+msgid "Access to your Crypto Portfolio"
+msgstr ""
+
+#: crypto-portfolio-tracker.php:167
+msgid "Log in or register to manage your cryptocurrency portfolio."
+msgstr ""
+
+#: crypto-portfolio-tracker.php:171
+#: crypto-portfolio-tracker.php:112
+msgid "Log In"
+msgstr ""
+
+#: crypto-portfolio-tracker.php:175
+#: crypto-portfolio-tracker.php:113
+msgid "Register"
+msgstr ""
+
+#: crypto-portfolio-tracker.php:207
+msgid "Admin dashboard file not found."
+msgstr ""
+
+#: crypto-portfolio-tracker.php:216
+msgid "Settings file not found."
+msgstr ""
+
+#: crypto-portfolio-tracker.php:268
+msgid "My Crypto Portfolio"
+msgstr ""
+
+#. JavaScript strings
+msgid "Access Required"
+msgstr ""
+
+msgid "You need to log in to view your cryptocurrency portfolio."
+msgstr ""
+
+msgid "Loading portfolio..."
+msgstr ""
+
+msgid "Add Transaction"
+msgstr ""
+
+msgid "Cancel"
+msgstr ""
+
+msgid "Refresh Prices"
+msgstr ""
+
+msgid "Crypto Investment Dashboard"
+msgstr ""
+
+msgid "Complete analysis of your crypto portfolio"
+msgstr ""
+
+msgid "Total Investment"
+msgstr ""
+
+msgid "Current Value"
+msgstr ""
+
+msgid "Total P&L"
+msgstr ""
+
+msgid "ROI %"
+msgstr ""
+
+msgid "Investment Evolution"
+msgstr ""
+
+msgid "Portfolio Distribution"
+msgstr ""
+
+msgid "Performance per Crypto"
+msgstr ""
+
+msgid "Crypto Detail"
+msgstr ""
+
+msgid "Transaction History"
+msgstr ""
+
+msgid "Empty Portfolio"
+msgstr ""
+
+msgid "Empty Portfolio"
+msgstr ""
+
+msgid "Start by adding your first transaction to see your portfolio in action!"
+msgstr ""
+
+msgid "Add First Transaction"
+msgstr ""
+
+#. Plugin Name of the plugin/theme
+msgid "Crypto Portfolio Tracker"
+msgstr ""
+
+#. Plugin URI of the plugin/theme
+msgid "https://wordpress.org/plugins/crypto-portfolio-tracker/"
+msgstr ""
+
+#. Description of the plugin/theme
+msgid "Complete cryptocurrency portfolio tracking with real-time prices, P&L analysis, and interactive dashboard. Multi-user support for investment management."
+msgstr ""
+
+#. Author of the plugin/theme
+msgid "Emigdio Salvador Corado"
+msgstr ""
+
+#. Author URI of the plugin/theme
+msgid "https://salvadoresc.com/"
+msgstr ""

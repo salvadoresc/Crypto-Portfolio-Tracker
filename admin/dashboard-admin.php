@@ -3,13 +3,13 @@ if (!defined('ABSPATH')) {
     exit;
 }
 
-// Obtener estadísticas generales (sin datos sensibles)
+// Get general statistics (without sensitive data)
 global $wpdb;
 $portfolio_table = $wpdb->prefix . 'cpt_portfolio';
 $transactions_table = $wpdb->prefix . 'cpt_transactions';
 $watchlist_table = $wpdb->prefix . 'cpt_watchlist';
 
-// Estadísticas básicas (sin montos)
+// Basic statistics (without amounts)
 $stats = array(
     'total_users' => $wpdb->get_var("SELECT COUNT(DISTINCT user_id) FROM $transactions_table"),
     'total_transactions' => $wpdb->get_var("SELECT COUNT(*) FROM $transactions_table"),
@@ -19,7 +19,7 @@ $stats = array(
     'new_users_week' => $wpdb->get_var($wpdb->prepare("SELECT COUNT(DISTINCT user_id) FROM $transactions_table WHERE created_at >= %s", date('Y-m-d H:i:s', strtotime('-7 days'))))
 );
 
-// Top usuarios por número de transacciones (SIN MONTOS)
+// Top users by number of transactions (WITHOUT AMOUNTS)
 $top_users = $wpdb->get_results("
     SELECT 
         u.user_login,
@@ -32,7 +32,7 @@ $top_users = $wpdb->get_results("
     LIMIT 10
 ");
 
-// Cryptos más populares (CON total invertido agregado, sin detalles de usuarios)
+// Most popular cryptos (WITH aggregated total invested, without user details)
 $popular_cryptos = $wpdb->get_results("
     SELECT 
         coin_symbol,
@@ -46,7 +46,7 @@ $popular_cryptos = $wpdb->get_results("
     LIMIT 10
 ");
 
-// Actividad reciente (SIN MONTOS NI CANTIDADES)
+// Recent activity (WITHOUT AMOUNTS OR QUANTITIES)
 $recent_activity = $wpdb->get_results("
     SELECT 
         t.created_at,
@@ -66,16 +66,16 @@ $dashboard_page = get_post($dashboard_page_id);
 ?>
 
 <div class="wrap">
-    <h1>Crypto Portfolio Tracker - Dashboard</h1>
+    <h1><?php esc_html_e('Crypto Portfolio Tracker - Dashboard', 'crypto-portfolio-tracker'); ?></h1>
     
-    <!-- Estadísticas principales -->
+    <!-- Main Statistics -->
     <div class="cpt-dashboard-grid">
         <div class="cpt-stat-widget">
             <div class="stat-icon">👥</div>
             <div class="stat-info">
                 <div class="stat-number"><?php echo number_format($stats['total_users']); ?></div>
-                <div class="stat-label">Usuarios Activos</div>
-                <div class="stat-change">+<?php echo $stats['new_users_week']; ?> esta semana</div>
+                <div class="stat-label"><?php esc_html_e('Active Users', 'crypto-portfolio-tracker'); ?></div>
+                <div class="stat-change">+<?php echo $stats['new_users_week']; ?> <?php esc_html_e('this week', 'crypto-portfolio-tracker'); ?></div>
             </div>
         </div>
         
@@ -83,8 +83,8 @@ $dashboard_page = get_post($dashboard_page_id);
             <div class="stat-icon">💰</div>
             <div class="stat-info">
                 <div class="stat-number"><?php echo number_format($stats['total_transactions']); ?></div>
-                <div class="stat-label">Transacciones</div>
-                <div class="stat-change"><?php echo $stats['transactions_today']; ?> hoy</div>
+                <div class="stat-label"><?php esc_html_e('Transactions', 'crypto-portfolio-tracker'); ?></div>
+                <div class="stat-change"><?php echo $stats['transactions_today']; ?> <?php esc_html_e('today', 'crypto-portfolio-tracker'); ?></div>
             </div>
         </div>
         
@@ -92,8 +92,8 @@ $dashboard_page = get_post($dashboard_page_id);
             <div class="stat-icon">📊</div>
             <div class="stat-info">
                 <div class="stat-number"><?php echo number_format($stats['total_portfolio_items']); ?></div>
-                <div class="stat-label">Holdings</div>
-                <div class="stat-change">En portfolios</div>
+                <div class="stat-label"><?php esc_html_e('Holdings', 'crypto-portfolio-tracker'); ?></div>
+                <div class="stat-change"><?php esc_html_e('In portfolios', 'crypto-portfolio-tracker'); ?></div>
             </div>
         </div>
         
@@ -101,55 +101,55 @@ $dashboard_page = get_post($dashboard_page_id);
             <div class="stat-icon">⭐</div>
             <div class="stat-info">
                 <div class="stat-number"><?php echo number_format($stats['total_watchlist_items']); ?></div>
-                <div class="stat-label">En Watchlist</div>
-                <div class="stat-change">Monitoreo</div>
+                <div class="stat-label"><?php esc_html_e('In Watchlist', 'crypto-portfolio-tracker'); ?></div>
+                <div class="stat-change"><?php esc_html_e('Monitoring', 'crypto-portfolio-tracker'); ?></div>
             </div>
         </div>
     </div>
     
     <!-- Quick Actions -->
     <div class="cpt-quick-actions">
-        <h2>Acciones Rápidas</h2>
+        <h2><?php esc_html_e('Quick Actions', 'crypto-portfolio-tracker'); ?></h2>
         <div class="cpt-action-buttons">
             <a href="<?php echo admin_url('admin.php?page=crypto-portfolio-settings'); ?>" class="button button-primary">
-                ⚙️ Configuración
+                ⚙️ <?php esc_html_e('Settings', 'crypto-portfolio-tracker'); ?>
             </a>
             <?php if ($dashboard_page): ?>
                 <a href="<?php echo get_permalink($dashboard_page); ?>" class="button" target="_blank">
-                    🚀 Ver Dashboard Público
+                    🚀 <?php esc_html_e('View Public Dashboard', 'crypto-portfolio-tracker'); ?>
                 </a>
             <?php else: ?>
                 <button type="button" class="button button-secondary" id="create-dashboard-page">
-                    📄 Crear Página del Dashboard
+                    📄 <?php esc_html_e('Create Dashboard Page', 'crypto-portfolio-tracker'); ?>
                 </button>
             <?php endif; ?>
             <button type="button" class="button" id="clear-cache">
-                🔄 Limpiar Cache de Precios
+                🔄 <?php esc_html_e('Clear Price Cache', 'crypto-portfolio-tracker'); ?>
             </button>
             <button type="button" class="button" id="export-data">
-                📥 Exportar Estadísticas
+                📥 <?php esc_html_e('Export Statistics', 'crypto-portfolio-tracker'); ?>
             </button>
         </div>
     </div>
     
     <div class="cpt-admin-content">
-        <!-- Top Users (SIN MONTOS) -->
+        <!-- Top Users (WITHOUT AMOUNTS) -->
         <div class="cpt-admin-widget">
-            <h3>👑 Usuarios Más Activos</h3>
+            <h3><?php esc_html_e('👑 Most Active Users', 'crypto-portfolio-tracker'); ?></h3>
             <div class="cpt-table-container">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th>Usuario</th>
-                            <th>Email</th>
-                            <th>Transacciones</th>
+                            <th><?php esc_html_e('User', 'crypto-portfolio-tracker'); ?></th>
+                            <th><?php esc_html_e('Email', 'crypto-portfolio-tracker'); ?></th>
+                            <th><?php esc_html_e('Transactions', 'crypto-portfolio-tracker'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($top_users)): ?>
                             <tr>
                                 <td colspan="3" style="text-align: center; color: #666;">
-                                    No hay usuarios con transacciones aún
+                                    <?php esc_html_e('No users with transactions yet', 'crypto-portfolio-tracker'); ?>
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -166,24 +166,24 @@ $dashboard_page = get_post($dashboard_page_id);
             </div>
         </div>
         
-        <!-- Popular Cryptos (CON total invertido agregado) -->
+        <!-- Popular Cryptos (WITH aggregated total invested) -->
         <div class="cpt-admin-widget">
-            <h3>🔥 Criptomonedas Más Populares</h3>
+            <h3><?php esc_html_e('🔥 Most Popular Cryptocurrencies', 'crypto-portfolio-tracker'); ?></h3>
             <div class="cpt-table-container">
                 <table class="wp-list-table widefat fixed striped">
                     <thead>
                         <tr>
-                            <th>Crypto</th>
-                            <th>Nombre</th>
-                            <th>Usuarios</th>
-                            <th>Total Invertido</th>
+                            <th><?php esc_html_e('Crypto', 'crypto-portfolio-tracker'); ?></th>
+                            <th><?php esc_html_e('Name', 'crypto-portfolio-tracker'); ?></th>
+                            <th><?php esc_html_e('Users', 'crypto-portfolio-tracker'); ?></th>
+                            <th><?php esc_html_e('Total Invested', 'crypto-portfolio-tracker'); ?></th>
                         </tr>
                     </thead>
                     <tbody>
                         <?php if (empty($popular_cryptos)): ?>
                             <tr>
                                 <td colspan="4" style="text-align: center; color: #666;">
-                                    No hay datos de portfolio aún
+                                    <?php esc_html_e('No portfolio data yet', 'crypto-portfolio-tracker'); ?>
                                 </td>
                             </tr>
                         <?php else: ?>
@@ -191,7 +191,7 @@ $dashboard_page = get_post($dashboard_page_id);
                                 <tr>
                                     <td><strong><?php echo esc_html($crypto->coin_symbol); ?></strong></td>
                                     <td><?php echo esc_html($crypto->coin_name); ?></td>
-                                    <td><?php echo number_format($crypto->user_count); ?> usuarios</td>
+                                    <td><?php echo number_format($crypto->user_count); ?> <?php esc_html_e('users', 'crypto-portfolio-tracker'); ?></td>
                                     <td>$<?php echo number_format($crypto->total_invested, 2); ?></td>
                                 </tr>
                             <?php endforeach; ?>
@@ -202,25 +202,25 @@ $dashboard_page = get_post($dashboard_page_id);
         </div>
     </div>
     
-    <!-- Recent Activity (SIN MONTOS) -->
+    <!-- Recent Activity (WITHOUT AMOUNTS) -->
     <div class="cpt-admin-widget full-width">
-        <h3>📈 Actividad Reciente</h3>
+        <h3><?php esc_html_e('📈 Recent Activity', 'crypto-portfolio-tracker'); ?></h3>
         <div class="cpt-table-container">
             <table class="wp-list-table widefat fixed striped">
                 <thead>
                     <tr>
-                        <th>Fecha</th>
-                        <th>Usuario</th>
-                        <th>Crypto</th>
-                        <th>Tipo</th>
-                        <th>Estado</th>
+                        <th><?php esc_html_e('Date', 'crypto-portfolio-tracker'); ?></th>
+                        <th><?php esc_html_e('User', 'crypto-portfolio-tracker'); ?></th>
+                        <th><?php esc_html_e('Crypto', 'crypto-portfolio-tracker'); ?></th>
+                        <th><?php esc_html_e('Type', 'crypto-portfolio-tracker'); ?></th>
+                        <th><?php esc_html_e('Status', 'crypto-portfolio-tracker'); ?></th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php if (empty($recent_activity)): ?>
                         <tr>
                             <td colspan="5" style="text-align: center; color: #666;">
-                                No hay actividad reciente
+                                <?php esc_html_e('No recent activity', 'crypto-portfolio-tracker'); ?>
                             </td>
                         </tr>
                     <?php else: ?>
@@ -234,11 +234,11 @@ $dashboard_page = get_post($dashboard_page_id);
                                 </td>
                                 <td>
                                     <span class="transaction-type <?php echo $activity->transaction_type; ?>">
-                                        <?php echo $activity->transaction_type === 'buy' ? '🟢 Compra' : '🔴 Venta'; ?>
+                                        <?php echo $activity->transaction_type === 'buy' ? '🟢 ' . esc_html__('Buy', 'crypto-portfolio-tracker') : '🔴 ' . esc_html__('Sell', 'crypto-portfolio-tracker'); ?>
                                     </span>
                                 </td>
                                 <td>
-                                    <span class="activity-status completed">✅ Completada</span>
+                                    <span class="activity-status completed">✅ <?php esc_html_e('Completed', 'crypto-portfolio-tracker'); ?></span>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
@@ -250,54 +250,54 @@ $dashboard_page = get_post($dashboard_page_id);
     
     <!-- System Status -->
     <div class="cpt-admin-widget">
-        <h3>🔧 Estado del Sistema</h3>
+        <h3><?php esc_html_e('🔧 System Status', 'crypto-portfolio-tracker'); ?></h3>
         <div class="cpt-system-status">
             <div class="status-item">
-                <span class="status-label">WordPress:</span>
+                <span class="status-label"><?php esc_html_e('WordPress:', 'crypto-portfolio-tracker'); ?></span>
                 <span class="status-value good">✅ <?php echo get_bloginfo('version'); ?></span>
             </div>
             <div class="status-item">
-                <span class="status-label">PHP:</span>
+                <span class="status-label"><?php esc_html_e('PHP:', 'crypto-portfolio-tracker'); ?></span>
                 <span class="status-value <?php echo version_compare(PHP_VERSION, '7.4', '>=') ? 'good' : 'warning'; ?>">
                     <?php echo version_compare(PHP_VERSION, '7.4', '>=') ? '✅' : '⚠️'; ?> <?php echo PHP_VERSION; ?>
                 </span>
             </div>
             <div class="status-item">
-                <span class="status-label">Registro de usuarios:</span>
+                <span class="status-label"><?php esc_html_e('User registration:', 'crypto-portfolio-tracker'); ?></span>
                 <span class="status-value <?php echo get_option('users_can_register') ? 'good' : 'warning'; ?>">
-                    <?php echo get_option('users_can_register') ? '✅ Habilitado' : '⚠️ Deshabilitado'; ?>
+                    <?php echo get_option('users_can_register') ? '✅ ' . esc_html__('Enabled', 'crypto-portfolio-tracker') : '⚠️ ' . esc_html__('Disabled', 'crypto-portfolio-tracker'); ?>
                 </span>
             </div>
             <div class="status-item">
-                <span class="status-label">API CoinGecko:</span>
-                <span class="status-value good">✅ Conectada</span>
+                <span class="status-label"><?php esc_html_e('CoinGecko API:', 'crypto-portfolio-tracker'); ?></span>
+                <span class="status-value good">✅ <?php esc_html_e('Connected', 'crypto-portfolio-tracker'); ?></span>
             </div>
             <div class="status-item">
-                <span class="status-label">Cache de precios:</span>
-                <span class="status-value good">✅ Activo (<?php echo $settings['cache_duration'] ?? 300; ?>s)</span>
+                <span class="status-label"><?php esc_html_e('Price cache:', 'crypto-portfolio-tracker'); ?></span>
+                <span class="status-value good">✅ <?php printf(esc_html__('Active (%ds)', 'crypto-portfolio-tracker'), $settings['cache_duration'] ?? 300); ?></span>
             </div>
             <div class="status-item">
-                <span class="status-label">Página del dashboard:</span>
+                <span class="status-label"><?php esc_html_e('Dashboard page:', 'crypto-portfolio-tracker'); ?></span>
                 <span class="status-value <?php echo $dashboard_page ? 'good' : 'warning'; ?>">
                     <?php if ($dashboard_page): ?>
-                        ✅ Configurada
+                        ✅ <?php esc_html_e('Configured', 'crypto-portfolio-tracker'); ?>
                     <?php else: ?>
-                        ⚠️ No configurada
+                        ⚠️ <?php esc_html_e('Not configured', 'crypto-portfolio-tracker'); ?>
                     <?php endif; ?>
                 </span>
             </div>
         </div>
     </div>
     
-    <!-- Información de privacidad -->
+    <!-- Privacy notice -->
     <div class="cpt-privacy-notice">
-        <h3>🔒 Compromiso de Privacidad</h3>
+        <h3><?php esc_html_e('🔒 Privacy Commitment', 'crypto-portfolio-tracker'); ?></h3>
         <p>
-            <strong>Crypto Portfolio Tracker</strong> respeta la privacidad de tus usuarios. 
-            Esta versión del dashboard no muestra montos invertidos individuales ni detalles financieros personales.
+            <strong><?php esc_html_e('Crypto Portfolio Tracker', 'crypto-portfolio-tracker'); ?></strong> <?php esc_html_e('respects the privacy of your users.', 'crypto-portfolio-tracker'); ?>
+            <?php esc_html_e('This dashboard version does not show individual invested amounts or personal financial details.', 'crypto-portfolio-tracker'); ?>
         </p>
         <p>
-            <em>Solo se muestran estadísticas agregadas y actividad general para ayudarte a administrar el plugin.</em>
+            <em><?php esc_html_e('Only aggregated statistics and general activity are shown to help you manage the plugin.', 'crypto-portfolio-tracker'); ?></em>
         </p>
     </div>
 </div>
@@ -306,21 +306,21 @@ $dashboard_page = get_post($dashboard_page_id);
 jQuery(document).ready(function($) {
     $('#clear-cache').click(function() {
         var button = $(this);
-        button.text('Limpiando...');
+        button.text('<?php esc_js_e('Clearing...', 'crypto-portfolio-tracker'); ?>');
         
         $.post(ajaxurl, {
             action: 'cpt_clear_cache',
             nonce: '<?php echo wp_create_nonce("cpt_clear_cache"); ?>'
         }, function(response) {
             if (response.success) {
-                button.text('✅ Cache Limpiado');
+                button.text('<?php esc_js_e('✅ Cache Cleared', 'crypto-portfolio-tracker'); ?>');
                 setTimeout(function() {
-                    button.text('🔄 Limpiar Cache de Precios');
+                    button.text('<?php esc_js_e('🔄 Clear Price Cache', 'crypto-portfolio-tracker'); ?>');
                 }, 2000);
             } else {
-                button.text('❌ Error');
+                button.text('<?php esc_js_e('❌ Error', 'crypto-portfolio-tracker'); ?>');
                 setTimeout(function() {
-                    button.text('🔄 Limpiar Cache de Precios');
+                    button.text('<?php esc_js_e('🔄 Clear Price Cache', 'crypto-portfolio-tracker'); ?>');
                 }, 2000);
             }
         });
@@ -332,7 +332,7 @@ jQuery(document).ready(function($) {
     
     $('#create-dashboard-page').click(function() {
         var button = $(this);
-        button.text('Creando...');
+        button.text('<?php esc_js_e('Creating...', 'crypto-portfolio-tracker'); ?>');
         
         $.post(ajaxurl, {
             action: 'cpt_create_dashboard_page',
@@ -341,8 +341,8 @@ jQuery(document).ready(function($) {
             if (response.success) {
                 location.reload();
             } else {
-                alert('Error al crear la página: ' + response.data);
-                button.text('📄 Crear Página del Dashboard');
+                alert('<?php esc_js_e('Error creating page:', 'crypto-portfolio-tracker'); ?> ' + response.data);
+                button.text('<?php esc_js_e('📄 Create Dashboard Page', 'crypto-portfolio-tracker'); ?>');
             }
         });
     });
@@ -519,9 +519,9 @@ jQuery(document).ready(function($) {
 </style>
 
 <?php
-// AJAX handlers actualizados
+// Updated AJAX handlers
 
-// Handler para limpiar cache (igual que antes)
+// Handler to clear cache (same as before)
 add_action('wp_ajax_cpt_clear_cache', function() {
     check_ajax_referer('cpt_clear_cache', 'nonce');
     
@@ -529,16 +529,16 @@ add_action('wp_ajax_cpt_clear_cache', function() {
         wp_die('Sin permisos');
     }
     
-    // Limpiar cache de CoinGecko
+    // Clear CoinGecko cache
     if (class_exists('CPT_CoinGecko_API')) {
         $coingecko = new CPT_CoinGecko_API();
         $coingecko->clear_cache();
     }
     
-    wp_send_json_success('Cache limpiado correctamente');
+    wp_send_json_success(__('Cache cleared successfully', 'crypto-portfolio-tracker'));
 });
 
-// Handler para exportar solo estadísticas (SIN datos sensibles)
+// Handler to export only statistics (WITHOUT sensitive data)
 add_action('wp_ajax_cpt_export_stats_data', function() {
     check_ajax_referer('cpt_export_stats', 'nonce');
     
@@ -550,7 +550,7 @@ add_action('wp_ajax_cpt_export_stats_data', function() {
     $transactions_table = $wpdb->prefix . 'cpt_transactions';
     $portfolio_table = $wpdb->prefix . 'cpt_portfolio';
     
-    // Solo estadísticas agregadas, SIN datos individuales sensibles
+    // Only aggregated statistics, WITHOUT sensitive individual data
     $stats_data = array(
         'export_date' => current_time('Y-m-d H:i:s'),
         'total_users' => $wpdb->get_var("SELECT COUNT(DISTINCT user_id) FROM $transactions_table"),
@@ -586,7 +586,7 @@ add_action('wp_ajax_cpt_export_stats_data', function() {
     exit;
 });
 
-// Handler para crear página del dashboard
+// Handler to create dashboard page
 add_action('wp_ajax_cpt_create_dashboard_page', function() {
     check_ajax_referer('cpt_create_page', 'nonce');
     
@@ -595,22 +595,22 @@ add_action('wp_ajax_cpt_create_dashboard_page', function() {
     }
     
     $page_data = array(
-        'post_title' => 'Mi Portfolio Crypto',
+        'post_title' => __('My Crypto Portfolio', 'crypto-portfolio-tracker'),
         'post_content' => '[crypto_dashboard]
 
-<h2>¡Bienvenido a tu Portfolio de Criptomonedas!</h2>
+<h2>' . esc_html__('Welcome to your Cryptocurrency Portfolio!', 'crypto-portfolio-tracker') . '</h2>
 
-<p>Gestiona y analiza todas tus inversiones en criptomonedas desde un solo lugar. Aquí puedes:</p>
+<p>' . esc_html__('Manage and analyze all your cryptocurrency investments from one place. Here you can:', 'crypto-portfolio-tracker') . '</p>
 
 <ul>
-<li>📊 <strong>Monitorear tu portfolio</strong> - Ve el valor actual de todas tus holdings</li>
-<li>📈 <strong>Analizar performance</strong> - Gráficos y métricas detalladas</li>
-<li>💰 <strong>Calcular ganancias/pérdidas</strong> - ROI automático para cada posición</li>
-<li>📝 <strong>Registrar transacciones</strong> - Historial completo de compras y ventas</li>
-<li>🎯 <strong>Simular escenarios</strong> - "¿Qué pasaría si...?" con diferentes precios</li>
+<li>📊 <strong>' . esc_html__('Monitor your portfolio', 'crypto-portfolio-tracker') . '</strong> - ' . esc_html__('See the current value of all your holdings', 'crypto-portfolio-tracker') . '</li>
+<li>📈 <strong>' . esc_html__('Analyze performance', 'crypto-portfolio-tracker') . '</strong> - ' . esc_html__('Charts and detailed metrics', 'crypto-portfolio-tracker') . '</li>
+<li>💰 <strong>' . esc_html__('Calculate gains/losses', 'crypto-portfolio-tracker') . '</strong> - ' . esc_html__('Automatic ROI for each position', 'crypto-portfolio-tracker') . '</li>
+<li>📝 <strong>' . esc_html__('Record transactions', 'crypto-portfolio-tracker') . '</strong> - ' . esc_html__('Complete history of buys and sells', 'crypto-portfolio-tracker') . '</li>
+<li>🎯 <strong>' . esc_html__('Simulate scenarios', 'crypto-portfolio-tracker') . '</strong> - ' . esc_html__('"What if...?" with different prices', 'crypto-portfolio-tracker') . '</li>
 </ul>
 
-<p><strong>¿Nuevo aquí?</strong> Comienza añadiendo tu primera transacción para ver tu portfolio en acción.</p>',
+<p><strong>' . esc_html__('New here?', 'crypto-portfolio-tracker') . '</strong> ' . esc_html__('Start by adding your first transaction to see your portfolio in action.', 'crypto-portfolio-tracker') . '</p>',
         'post_status' => 'publish',
         'post_type' => 'page',
         'post_author' => get_current_user_id(),
@@ -620,7 +620,7 @@ add_action('wp_ajax_cpt_create_dashboard_page', function() {
     $page_id = wp_insert_post($page_data);
     
     if ($page_id && !is_wp_error($page_id)) {
-        // Actualizar la configuración
+        // Update settings
         $settings = get_option('cpt_settings', array());
         $settings['dashboard_page_id'] = $page_id;
         update_option('cpt_settings', $settings);
@@ -628,10 +628,10 @@ add_action('wp_ajax_cpt_create_dashboard_page', function() {
         
         wp_send_json_success(array(
             'page_id' => $page_id,
-            'message' => 'Página creada correctamente'
+            'message' => __('Page created successfully', 'crypto-portfolio-tracker')
         ));
     } else {
-        wp_send_json_error('Error al crear la página');
+        wp_send_json_error(__('Error creating page', 'crypto-portfolio-tracker'));
     }
 });
 ?>
