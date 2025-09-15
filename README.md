@@ -1,157 +1,157 @@
 # 🚀 Crypto Portfolio Tracker - WordPress Plugin
 
-Un plugin completo de WordPress para crear un tracker de portfolio de criptomonedas con soporte multi-usuario, diseñado para uso público.
+A complete WordPress plugin for creating a cryptocurrency portfolio tracker with multi-user support, designed for public use.
 
 ![Version](https://img.shields.io/badge/version-1.0.0-blue)
 ![WordPress](https://img.shields.io/badge/WordPress-5.0%2B-blue)
 ![PHP](https://img.shields.io/badge/PHP-7.4%2B-purple)
 ![License](https://img.shields.io/badge/license-GPL%20v2-green)
 
-## ✨ Características Principales
+## ✨ Key Features
 
-### 🎯 Para Usuarios
-- **Portfolio Personalizado**: Cada usuario registrado tiene su propio portfolio privado
-- **Análisis en Tiempo Real**: Precios actualizados desde CoinGecko API con cache inteligente
-- **Cálculo Automático de P&L**: ROI y ganancias/pérdidas calculadas automáticamente
-- **Gestión de Transacciones**: Añadir compras/ventas con historial completo
-- **Dashbaord Moderno**: Interfaz React con glassmorphism y animaciones
-- **Gráficos Interactivos**: Visualizaciones con Recharts para análisis
-- **Exportación de Datos**: Descarga tu portfolio en JSON/CSV
-- **Watchlist**: Monitorea cryptos sin invertir (próximamente)
+### 🎯 For Users
+- **Personal Portfolio**: Each registered user has their own private portfolio
+- **Real-time Analysis**: Updated prices from CoinGecko API with intelligent caching
+- **Automatic P&L Calculation**: ROI and profit/loss calculated automatically
+- **Transaction Management**: Add buys/sells with complete history
+- **Modern Dashboard**: React interface with glassmorphism and animations
+- **Interactive Charts**: Visualizations with Recharts for analysis
+- **Data Export**: Download your portfolio in JSON/CSV
+- **Watchlist**: Monitor cryptos without investing (coming soon)
 
-### 🔧 Para Administradores
-- **Setup Wizard**: Configuración automática paso a paso
-- **Dashboard de Administración**: Estadísticas y métricas del sitio (respetando privacidad)
-- **Gestión Multi-Usuario**: Soporte para registro público
-- **Control de Cache**: Optimización de rendimiento de API
-- **Estadísticas Agregadas**: Usuarios activos, transacciones, cryptos populares
-- **Exportación de Stats**: Backup de estadísticas generales
-- **Sistema de Permisos**: Control granular de funcionalidades
+### 🔧 For Administrators
+- **Setup Wizard**: Automatic step-by-step configuration
+- **Admin Dashboard**: Site statistics and metrics (privacy-respecting)
+- **Multi-User Management**: Support for public registration
+- **Cache Control**: API performance optimization
+- **Aggregate Statistics**: Active users, transactions, popular cryptos
+- **Stats Export**: Backup of general statistics
+- **Permission System**: Granular functionality control
 
-## 🗂️ Arquitectura Técnica
+## 🗂️ Technical Architecture
 
 ### Frontend
-- **React 18** con Hooks modernos
-- **Tailwind CSS** personalizado para styling
-- **Recharts** para gráficos y visualizaciones
-- **WordPress REST API** para comunicación backend
-- **Cache inteligente** para optimización
+- **React 18** with modern Hooks
+- **Custom Tailwind CSS** for styling
+- **Recharts** for charts and visualizations
+- **WordPress REST API** for backend communication
+- **Intelligent caching** for optimization
 
 ### Backend
-- **WordPress REST API** personalizada con endpoints seguros
-- **Tablas MySQL** optimizadas con índices
-- **CoinGecko API** para precios en tiempo real
-- **Sistema de Cache** transient de WordPress (5 min por defecto)
-- **Hooks y Filters** de WordPress para extensibilidad
+- **Custom WordPress REST API** with secure endpoints
+- **Optimized MySQL tables** with indexes
+- **CoinGecko API** for real-time prices
+- **WordPress transient cache system** (5 min default)
+- **WordPress Hooks and Filters** for extensibility
 
-### Base de Datos
-- **cpt_portfolio**: Holdings de usuarios con precios actuales
-- **cpt_transactions**: Historial completo de transacciones
-- **cpt_watchlist**: Lista de seguimiento de cryptos
+### Database
+- **cpt_portfolio**: User holdings with current prices
+- **cpt_transactions**: Complete transaction history
+- **cpt_watchlist**: Crypto watchlist
 
-## 📦 Instalación
+## 📦 Installation
 
-### Instalación Manual
+### Manual Installation
 
-1. **Descarga el Plugin**
+1. **Download the Plugin**
    ```bash
-   git clone https://github.com/tu-usuario/crypto-portfolio-tracker.git
+   git clone https://github.com/salvadoresc/crypto-portfolio-tracker.git
    cd crypto-portfolio-tracker
    ```
 
-2. **Sube a WordPress**
-   - Copia la carpeta completa a `/wp-content/plugins/`
-   - O sube el archivo ZIP desde WordPress Admin → Plugins → Añadir nuevo
+2. **Upload to WordPress**
+   - Copy the complete folder to `/wp-content/plugins/`
+   - Or upload ZIP file from WordPress Admin → Plugins → Add New
 
-3. **Activa el Plugin**
-   - Ve a WordPress Admin → Plugins
-   - Busca "Crypto Portfolio Tracker"
-   - Haz clic en "Activar"
+3. **Activate the Plugin**
+   - Go to WordPress Admin → Plugins
+   - Find "Crypto Portfolio Tracker"
+   - Click "Activate"
 
-4. **Configuración Automática**
-   - Ve a **Crypto Portfolio** en el menú de administración
-   - El Setup Wizard se ejecutará automáticamente
-   - ¡Listo! 🎉
+4. **Automatic Configuration**
+   - Go to **Crypto Portfolio** in admin menu
+   - Setup Wizard will run automatically
+   - Ready! 🎉
 
-### Verificación de Instalación
+### Installation Verification
 
-El plugin incluye un sistema de verificación que comprueba:
-- ✅ Creación automática de tablas de BD
-- ✅ Configuración de página con shortcode
-- ✅ Verificación de dependencias React
-- ✅ Conexión a CoinGecko API
-- ✅ Configuración de cache
+The plugin includes a verification system that checks:
+- ✅ Automatic database table creation
+- ✅ Page configuration with shortcode
+- ✅ React dependencies verification
+- ✅ CoinGecko API connection
+- ✅ Cache configuration
 
-## ⚙️ Configuración
+## ⚙️ Configuration
 
-### Setup Wizard (Recomendado)
+### Setup Wizard (Recommended)
 
-El plugin incluye un asistente de configuración que se ejecuta automáticamente:
+The plugin includes a configuration wizard that runs automatically:
 
-1. **Configuración de Página**: Crea automáticamente la página del dashboard
-2. **Verificación de Permisos**: Comprueba registro de usuarios
-3. **Configuración de API**: Configura CoinGecko API
-4. **Tablas de BD**: Crea las tablas necesarias
-5. **Verificación de Frontend**: Comprueba dependencias React/Recharts
+1. **Page Configuration**: Automatically creates dashboard page
+2. **Permission Verification**: Checks user registration
+3. **API Configuration**: Sets up CoinGecko API
+4. **Database Tables**: Creates necessary tables
+5. **Frontend Verification**: Checks React/Recharts dependencies
 
-### Configuración Manual
+### Manual Configuration
 
-#### 1. CoinGecko API (Opcional)
+#### 1. CoinGecko API (Optional)
 ```php
-// Para mayor límite de requests (recomendado para sitios grandes)
-// En Crypto Portfolio → Configuración
-$settings['coingecko_api_key'] = 'tu_api_key_aqui';
-$settings['cache_duration'] = 300; // 5 minutos
+// For higher request limits (recommended for large sites)
+// In Crypto Portfolio → Settings
+$settings['coingecko_api_key'] = 'your_api_key_here';
+$settings['cache_duration'] = 300; // 5 minutes
 ```
 
-#### 2. Habilitar Registro Público
+#### 2. Enable Public Registration
 ```php
-// En wp-admin → Configuración → General
+// In wp-admin → Settings → General
 update_option('users_can_register', 1);
 ```
 
-#### 3. Configurar Página del Dashboard
-El plugin crea automáticamente una página con el shortcode `[crypto_dashboard]`, pero puedes usar el shortcode en cualquier página.
+#### 3. Configure Dashboard Page
+The plugin automatically creates a page with `[crypto_dashboard]` shortcode, but you can use the shortcode on any page.
 
-## 🎨 Uso del Plugin
+## 🎨 Plugin Usage
 
-### Shortcodes Disponibles
+### Available Shortcodes
 
-#### Dashboard Principal
+#### Main Dashboard
 ```php
 [crypto_dashboard]
-// Muestra el dashboard completo para usuarios logueados
+// Shows complete dashboard for logged-in users
 ```
 
-#### Dashboard Público (Próximamente)
+#### Public Dashboard (Coming Soon)
 ```php
 [crypto_dashboard public="true"]
-// Permite ver datos sin registro
+// Allows viewing data without registration
 ```
 
-### Hooks Disponibles
+### Available Hooks
 
 #### Actions
 ```php
-// Después de añadir transacción
+// After adding transaction
 do_action('cpt_transaction_added', $user_id, $transaction_data);
 
-// Después de actualizar portfolio
+// After updating portfolio
 do_action('cpt_portfolio_updated', $user_id, $portfolio_data);
 
-// Después de login exitoso
+// After successful login
 do_action('cpt_user_dashboard_accessed', $user_id);
 ```
 
 #### Filters
 ```php
-// Modificar configuraciones por defecto
+// Modify default settings
 $settings = apply_filters('cpt_default_settings', $settings);
 
-// Personalizar datos del portfolio
+// Customize portfolio data
 $portfolio = apply_filters('cpt_portfolio_data', $portfolio, $user_id);
 
-// Modificar precios mostrados
+// Modify displayed prices
 $prices = apply_filters('cpt_coin_prices', $prices, $coin_ids);
 ```
 
@@ -159,227 +159,231 @@ $prices = apply_filters('cpt_coin_prices', $prices, $coin_ids);
 
 ### Portfolio
 ```javascript
-// Obtener portfolio del usuario
+// Get user portfolio
 GET /wp-json/crypto-portfolio/v1/portfolio
 
-// Actualizar item del portfolio
+// Update portfolio item
 POST /wp-json/crypto-portfolio/v1/portfolio
 
-// Eliminar item del portfolio
+// Delete portfolio item
 DELETE /wp-json/crypto-portfolio/v1/portfolio/{coin_id}
 
-// Limpiar duplicados
+// Clean duplicates
 POST /wp-json/crypto-portfolio/v1/portfolio/clean
 ```
 
-### Transacciones
+### Transactions
 ```javascript
-// Obtener transacciones
+// Get transactions
 GET /wp-json/crypto-portfolio/v1/transactions
 
-// Añadir nueva transacción
+// Add new transaction
 POST /wp-json/crypto-portfolio/v1/transactions
 {
   "coin_id": "bitcoin",
   "coin_symbol": "BTC", 
   "coin_name": "Bitcoin",
   "type": "buy",
-  "amount": 100.00,     // Monto total invertido
-  "price": 45000.00,    // Precio por unidad
-  "quantity": 0.00222,  // Cantidad exacta recibida
+  "amount": 100.00,     // Total amount invested
+  "price": 45000.00,    // Price per unit
+  "quantity": 0.00222,  // Exact quantity received
   "date": "2024-01-15",
   "exchange": "Binance",
-  "notes": "Compra mensual"
+  "notes": "Monthly purchase"
 }
 
-// Actualizar transacción
+// Update transaction
 PUT /wp-json/crypto-portfolio/v1/transactions/{id}
 
-// Eliminar transacción
+// Delete transaction
 DELETE /wp-json/crypto-portfolio/v1/transactions/{id}
 ```
 
 ### Market Data
 ```javascript
-// Buscar cryptos
+// Search cryptos
 GET /wp-json/crypto-portfolio/v1/market/search?q=bitcoin
 
-// Obtener precios actuales
+// Get current prices
 GET /wp-json/crypto-portfolio/v1/market/prices?ids=bitcoin,ethereum
 
-// Cryptos trending
+// Trending cryptos
 GET /wp-json/crypto-portfolio/v1/market/trending
 ```
 
 ### Watchlist
 ```javascript
-// Obtener watchlist
+// Get watchlist
 GET /wp-json/crypto-portfolio/v1/watchlist
 
-// Añadir a watchlist
+// Add to watchlist
 POST /wp-json/crypto-portfolio/v1/watchlist
 
-// Remover de watchlist
+// Remove from watchlist
 DELETE /wp-json/crypto-portfolio/v1/watchlist/{coin_id}
 ```
 
-## 🎯 Características Técnicas
+## 🎯 Technical Features
 
-### Seguridad
-- **Nonces de WordPress** para todas las peticiones AJAX
-- **Sanitización** de todos los inputs
-- **Validación** de permisos por usuario
-- **Escape** de outputs para prevenir XSS
-- **Privacidad**: El admin NO puede ver montos individuales
+### Security
+- **WordPress Nonces** for all AJAX requests
+- **Input Sanitization** for all inputs
+- **Permission Validation** per user
+- **Output Escaping** to prevent XSS
+- **Privacy**: Admins CANNOT see individual amounts
 
 ### Performance
-- **Cache inteligente** de precios (5 min configurable)
-- **Lazy loading** de componentes React
-- **Optimización de queries** con índices de BD
-- **Chunking** de peticiones a APIs externas
-- **Transients** de WordPress para cache
+- **Intelligent price caching** (5 min configurable)
+- **Lazy loading** of React components
+- **Query optimization** with database indexes
+- **API request chunking** for external APIs
+- **WordPress transients** for caching
 
-### Compatibilidad
-- **WordPress 5.0+** con Gutenberg
-- **PHP 7.4+** con type hints
-- **React 18** con concurrent features
-- **Recharts 2.x** para gráficos
-- **Responsive design** para móviles
+### Compatibility
+- **WordPress 5.0+** with Gutenberg
+- **PHP 7.4+** with type hints
+- **React 18** with concurrent features
+- **Recharts 2.x** for charts
+- **Responsive design** for mobile
 
-## 🔧 Desarrollo y Personalización
+## 🔧 Development and Customization
 
-### Estructura de Archivos
+### File Structure
 ```
 crypto-portfolio-tracker/
-├── crypto-portfolio-tracker.php    # Archivo principal
+├── crypto-portfolio-tracker.php    # Main file
 ├── includes/
-│   ├── class-database.php          # Manejo de BD
+│   ├── class-database.php          # Database handling
 │   ├── class-api-handler.php       # REST API endpoints
-│   ├── class-user-portfolio.php    # Lógica de portfolio
-│   └── class-coingecko-api.php     # Integración CoinGecko
+│   ├── class-user-portfolio.php    # Portfolio logic
+│   └── class-coingecko-api.php     # CoinGecko integration
 ├── admin/
-│   ├── dashboard-admin.php         # Dashboard de admin
-│   └── settings.php                # Página de configuración
+│   ├── dashboard-admin.php         # Admin dashboard
+│   └── settings.php                # Settings page
 ├── assets/
 │   ├── js/dashboard.js             # React dashboard
-│   └── css/dashboard.css           # Estilos personalizados
+│   └── css/dashboard.css           # Custom styles
 ├── README.md
 └── INSTALL.md
 ```
 
-### Personalizar Estilos
-Edita `assets/css/dashboard.css` para cambiar:
-- Colores del tema (glassmorphism)
-- Tamaños de fuente
-- Espaciados y animaciones
-- Efectos visuales
+### Customize Styles
+Edit `assets/css/dashboard.css` to change:
+- Theme colors (glassmorphism)
+- Font sizes
+- Spacing and animations
+- Visual effects
 
-### Añadir Nuevas Funcionalidades
-1. Crea hooks personalizados en el archivo principal
-2. Añade endpoints en `includes/class-api-handler.php`
-3. Modifica el componente React en `assets/js/dashboard.js`
-4. Actualiza la clase Database si necesitas nuevas tablas
+### Add New Features
+1. Create custom hooks in main file
+2. Add endpoints in `includes/class-api-handler.php`
+3. Modify React component in `assets/js/dashboard.js`
+4. Update Database class if new tables needed
 
 ## 📊 Dashboard Features
 
-### Estadísticas en Tiempo Real
-- **Inversión Total**: Suma de todos los montos invertidos
-- **Valor Actual**: Valor del portfolio con precios actuales
-- **P&L Total**: Ganancias/pérdidas en USD y porcentaje
-- **ROI**: Return on Investment calculado automáticamente
+### Real-time Statistics
+- **Total Investment**: Sum of all invested amounts
+- **Current Value**: Portfolio value with current prices
+- **Total P&L**: Profit/loss in USD and percentage
+- **ROI**: Return on Investment calculated automatically
 
-### Gráficos Interactivos
-- **Evolución de Inversiones**: Timeline de inversiones acumulativas
-- **Distribución del Portfolio**: Pie chart con porcentajes
-- **Performance por Crypto**: Bar chart con ROI por moneda
+### Interactive Charts
+- **Investment Evolution**: Timeline of cumulative investments
+- **Portfolio Distribution**: Pie chart with percentages
+- **Performance per Crypto**: Bar chart with ROI per currency
 
-### Gestión de Transacciones
-- **Formulario Inteligente**: Autocompletado con CoinGecko
-- **Edición/Eliminación**: Gestión completa del historial
-- **Validación**: Verificación de datos en tiempo real
-- **Recálculo Automático**: Portfolio se actualiza en cada cambio
+### Transaction Management
+- **Intelligent Form**: Autocomplete with CoinGecko
+- **Edit/Delete**: Complete history management
+- **Real-time Validation**: Data verification in real time
+- **Automatic Recalculation**: Portfolio updates on each change
 
-## 🛡️ Privacidad y Seguridad
+## 🛡️ Privacy and Security
 
-### Compromiso de Privacidad
-- Los administradores **NO pueden ver** montos individuales de usuarios
-- Dashboard de admin muestra solo **estadísticas agregadas**
-- **Datos sensibles protegidos** a nivel de código
-- **Cumplimiento GDPR** con exportación de datos personales
+### Privacy Commitment
+- Administrators **CANNOT see** individual user amounts
+- Admin dashboard shows only **aggregate statistics**
+- **Sensitive data protected** at code level
+- **GDPR compliance** with personal data export
 
-### Medidas de Seguridad
-- **Validación estricta** de todos los inputs
-- **Sanitización** antes de guardado en BD
-- **Nonces** para prevenir CSRF
-- **Permisos granulares** por funcionalidad
-- **Rate limiting** en API externa
+### Security Measures
+- **Strict validation** of all inputs
+- **Sanitization** before database storage
+- **Nonces** to prevent CSRF
+- **Granular permissions** per functionality
+- **Rate limiting** on external API
 
 ## 🚀 Roadmap
 
-### v1.1 (Próximamente)
-- [ ] Watchlist completa con alertas
-- [ ] Importación CSV de transacciones
-- [ ] Más exchanges soportados
-- [ ] Notificaciones push
+### v1.1 (Coming Soon)
+- [ ] Complete watchlist with alerts
+- [ ] CSV transaction import
+- [ ] More supported exchanges
+- [ ] Push notifications
 
-### v1.2 (Futuro)
-- [ ] Portfolio sharing público
-- [ ] Análisis técnico básico
-- [ ] Integración con más APIs
-- [ ] Dashboard para móvil nativo
-- [ ] Sistema de traducciones i18n
+### v1.2 (Future)
+- [ ] Public portfolio sharing
+- [ ] Basic technical analysis
+- [ ] More API integrations
+- [ ] Native mobile dashboard
 
-## 🆘 Soporte y Troubleshooting
+## 🆘 Support and Troubleshooting
 
-### Problemas Comunes
+### Common Issues
 
-1. **Dashboard no se muestra**
-   - Verifica que la página tenga el shortcode `[crypto_dashboard]`
-   - Asegúrate de que el usuario esté logueado
-   - Revisa la consola del navegador para errores JS
+1. **Dashboard not showing**
+   - Verify page has `[crypto_dashboard]` shortcode
+   - Ensure user is logged in
+   - Check browser console for JS errors
 
-2. **Error "Class not found"**
-   - Verifica que todos los archivos estén en las carpetas correctas
-   - Desactiva y reactiva el plugin
+2. **"Class not found" error**
+   - Verify all files are in correct folders
+   - Deactivate and reactivate plugin
 
-3. **Precios no se actualizan**
-   - Ve a Crypto Portfolio → Configuración → Limpiar Cache
-   - Verifica la conexión a CoinGecko API
+3. **Prices not updating**
+   - Go to Crypto Portfolio → Settings → Clear Cache
+   - Verify CoinGecko API connection
 
-4. **Gráficos no aparecen**
-   - Recarga la página (Recharts se carga asíncrono)
-   - Verifica que hay datos en el portfolio
+4. **Charts not appearing**
+   - Reload page (Recharts loads asynchronously)
+   - Verify there's data in portfolio
 
 ### Debug Mode
 ```php
-// Añadir a wp-config.php para debug
+// Add to wp-config.php for debugging
 define('WP_DEBUG', true);
 define('WP_DEBUG_LOG', true);
 ```
 
-### Logs del Plugin
-El plugin registra información en el log de WordPress:
-- Errores de API
-- Creación/actualización de transacciones
-- Cálculos de portfolio
+### Plugin Logs
+The plugin logs information to WordPress log:
+- API errors
+- Transaction creation/updates
+- Portfolio calculations
 
-## 📞 Soporte
+## 📞 Support
 
-Si tienes problemas:
-1. **Revisa los logs** de error de WordPress
-2. **Activa WP_DEBUG** en wp-config.php
-3. **Verifica** que todos los archivos estén en su lugar
-4. **Comprueba** que PHP >= 7.4 y WordPress >= 5.0
-5. **Prueba** desactivar otros plugins para detectar conflictos
+If you have problems:
+1. **Check WordPress error logs**
+2. **Enable WP_DEBUG** in wp-config.php
+3. **Verify** all files are in place
+4. **Check** PHP >= 7.4 and WordPress >= 5.0
+5. **Test** deactivating other plugins to detect conflicts
 
-Para reportar bugs o solicitar features, abre un issue en el repositorio de GitHub.
+To report bugs or request features, open an issue on the GitHub repository.
 
-## 📜 Licencia
+## 📜 License
 
-Este plugin está licenciado bajo GPL v2 o posterior. Es software libre: puedes redistribuirlo y/o modificarlo bajo los términos de la Licencia Pública General GNU.
+This plugin is licensed under GPL v2 or later. It's free software: you can redistribute it and/or modify it under the terms of the GNU General Public License.
 
 ---
 
-**Desarrollado con ❤️ para la comunidad crypto de WordPress**
+**Developed with ❤️ for the WordPress crypto community**
 
-¡Gracias por usar Crypto Portfolio Tracker! ⭐️
+Thank you for using Crypto Portfolio Tracker! ⭐️
+
+## 📖 Documentation in Other Languages
+
+- **Español**: [README-es.md](README-es.md)
+- **Installation Guide**: [INSTALL.md](INSTALL.md) | [INSTALL-es.md](INSTALL-es.md)
