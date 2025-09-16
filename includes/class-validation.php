@@ -24,20 +24,20 @@ class CPT_Validation {
 
         // Required fields
         $required_fields = array(
-            'coin_symbol' => __('Cryptocurrency symbol', 'crypto-portfolio-tracker'),
-            'coin_name' => __('Cryptocurrency name', 'crypto-portfolio-tracker'),
-            'type' => __('Transaction type', 'crypto-portfolio-tracker'),
-            'amount' => __('Amount', 'crypto-portfolio-tracker'),
-            'price' => __('Price', 'crypto-portfolio-tracker'),
-            'total' => __('Total value', 'crypto-portfolio-tracker'),
-            'date' => __('Date', 'crypto-portfolio-tracker')
+            'coin_symbol' => __('Cryptocurrency symbol', 'Crypto-Portfolio-Tracker'),
+            'coin_name' => __('Cryptocurrency name', 'Crypto-Portfolio-Tracker'),
+            'type' => __('Transaction type', 'Crypto-Portfolio-Tracker'),
+            'amount' => __('Amount', 'Crypto-Portfolio-Tracker'),
+            'price' => __('Price', 'Crypto-Portfolio-Tracker'),
+            'total' => __('Total value', 'Crypto-Portfolio-Tracker'),
+            'date' => __('Date', 'Crypto-Portfolio-Tracker')
         );
 
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field]) || empty($data[$field])) {
                 $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'crypto-portfolio-tracker'),
+                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
                     $label
                 ));
             }
@@ -53,19 +53,19 @@ class CPT_Validation {
         // Sanitize coin symbol (uppercase, alphanumeric + dash/underscore)
         $sanitized['coin_symbol'] = strtoupper(sanitize_text_field($data['coin_symbol']));
         if (!preg_match('/^[A-Z0-9_-]+$/', $sanitized['coin_symbol'])) {
-            $errors->add('invalid_symbol', __('Invalid cryptocurrency symbol format', 'crypto-portfolio-tracker'));
+            $errors->add('invalid_symbol', __('Invalid cryptocurrency symbol format', 'Crypto-Portfolio-Tracker'));
         }
 
         // Sanitize coin name
         $sanitized['coin_name'] = sanitize_text_field($data['coin_name']);
         if (strlen($sanitized['coin_name']) > 128) {
-            $errors->add('name_too_long', __('Cryptocurrency name is too long (max 128 characters)', 'crypto-portfolio-tracker'));
+            $errors->add('name_too_long', __('Cryptocurrency name is too long (max 128 characters)', 'Crypto-Portfolio-Tracker'));
         }
 
         // Validate transaction type
         $sanitized['type'] = strtolower(sanitize_text_field($data['type']));
         if (!in_array($sanitized['type'], array('buy', 'sell'), true)) {
-            $errors->add('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'crypto-portfolio-tracker'));
+            $errors->add('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'Crypto-Portfolio-Tracker'));
         }
 
         // Validate numeric fields
@@ -74,7 +74,7 @@ class CPT_Validation {
             $value = self::sanitize_float($data[$field]);
             if ($value <= 0) {
                 $errors->add('invalid_' . $field, sprintf(
-                    __('%s must be greater than 0', 'crypto-portfolio-tracker'),
+                    __('%s must be greater than 0', 'Crypto-Portfolio-Tracker'),
                     ucfirst($field)
                 ));
             }
@@ -84,13 +84,13 @@ class CPT_Validation {
         // Validate optional numeric fields
         $sanitized['fees'] = isset($data['fees']) ? self::sanitize_float($data['fees']) : 0.0;
         if ($sanitized['fees'] < 0) {
-            $errors->add('invalid_fees', __('Fees cannot be negative', 'crypto-portfolio-tracker'));
+            $errors->add('invalid_fees', __('Fees cannot be negative', 'Crypto-Portfolio-Tracker'));
         }
 
         // Validate and sanitize date
         $sanitized['date'] = self::validate_date($data['date']);
         if (!$sanitized['date']) {
-            $errors->add('invalid_date', __('Invalid date format. Use YYYY-MM-DD or YYYY-MM-DD HH:MM:SS', 'crypto-portfolio-tracker'));
+            $errors->add('invalid_date', __('Invalid date format. Use YYYY-MM-DD or YYYY-MM-DD HH:MM:SS', 'Crypto-Portfolio-Tracker'));
         }
 
         // Sanitize optional fields
@@ -99,12 +99,12 @@ class CPT_Validation {
 
         // Validate exchange length
         if (strlen($sanitized['exchange']) > 100) {
-            $errors->add('exchange_too_long', __('Exchange name is too long (max 100 characters)', 'crypto-portfolio-tracker'));
+            $errors->add('exchange_too_long', __('Exchange name is too long (max 100 characters)', 'Crypto-Portfolio-Tracker'));
         }
 
         // Validate notes length
         if (strlen($sanitized['notes']) > 1000) {
-            $errors->add('notes_too_long', __('Notes are too long (max 1000 characters)', 'crypto-portfolio-tracker'));
+            $errors->add('notes_too_long', __('Notes are too long (max 1000 characters)', 'Crypto-Portfolio-Tracker'));
         }
 
         return $errors->has_errors() ? $errors : $sanitized;
@@ -122,19 +122,19 @@ class CPT_Validation {
 
         // Required fields
         $required_fields = array(
-            'coin_id' => __('Cryptocurrency ID', 'crypto-portfolio-tracker'),
-            'coin_symbol' => __('Cryptocurrency symbol', 'crypto-portfolio-tracker'),
-            'coin_name' => __('Cryptocurrency name', 'crypto-portfolio-tracker'),
-            'total_amount' => __('Total amount', 'crypto-portfolio-tracker'),
-            'avg_buy_price' => __('Average buy price', 'crypto-portfolio-tracker'),
-            'total_invested' => __('Total invested', 'crypto-portfolio-tracker')
+            'coin_id' => __('Cryptocurrency ID', 'Crypto-Portfolio-Tracker'),
+            'coin_symbol' => __('Cryptocurrency symbol', 'Crypto-Portfolio-Tracker'),
+            'coin_name' => __('Cryptocurrency name', 'Crypto-Portfolio-Tracker'),
+            'total_amount' => __('Total amount', 'Crypto-Portfolio-Tracker'),
+            'avg_buy_price' => __('Average buy price', 'Crypto-Portfolio-Tracker'),
+            'total_invested' => __('Total invested', 'Crypto-Portfolio-Tracker')
         );
 
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field])) {
                 $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'crypto-portfolio-tracker'),
+                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
                     $label
                 ));
             }
@@ -155,7 +155,7 @@ class CPT_Validation {
             $value = self::sanitize_float($data[$field]);
             if ($value < 0) {
                 $errors->add('invalid_' . $field, sprintf(
-                    __('%s cannot be negative', 'crypto-portfolio-tracker'),
+                    __('%s cannot be negative', 'Crypto-Portfolio-Tracker'),
                     str_replace('_', ' ', ucfirst($field))
                 ));
             }
@@ -180,16 +180,16 @@ class CPT_Validation {
 
         // Required fields
         $required_fields = array(
-            'coin_id' => __('Cryptocurrency ID', 'crypto-portfolio-tracker'),
-            'coin_symbol' => __('Cryptocurrency symbol', 'crypto-portfolio-tracker'),
-            'coin_name' => __('Cryptocurrency name', 'crypto-portfolio-tracker')
+            'coin_id' => __('Cryptocurrency ID', 'Crypto-Portfolio-Tracker'),
+            'coin_symbol' => __('Cryptocurrency symbol', 'Crypto-Portfolio-Tracker'),
+            'coin_name' => __('Cryptocurrency name', 'Crypto-Portfolio-Tracker')
         );
 
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field]) || empty($data[$field])) {
                 $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'crypto-portfolio-tracker'),
+                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
                     $label
                 ));
             }
@@ -208,7 +208,7 @@ class CPT_Validation {
         if (isset($data['target_price']) && !empty($data['target_price'])) {
             $sanitized['target_price'] = self::sanitize_float($data['target_price']);
             if ($sanitized['target_price'] <= 0) {
-                $errors->add('invalid_target_price', __('Target price must be greater than 0', 'crypto-portfolio-tracker'));
+                $errors->add('invalid_target_price', __('Target price must be greater than 0', 'Crypto-Portfolio-Tracker'));
             }
         } else {
             $sanitized['target_price'] = null;
@@ -217,7 +217,7 @@ class CPT_Validation {
         // Optional notes
         $sanitized['notes'] = isset($data['notes']) ? sanitize_textarea_field($data['notes']) : '';
         if (strlen($sanitized['notes']) > 1000) {
-            $errors->add('notes_too_long', __('Notes are too long (max 1000 characters)', 'crypto-portfolio-tracker'));
+            $errors->add('notes_too_long', __('Notes are too long (max 1000 characters)', 'Crypto-Portfolio-Tracker'));
         }
 
         return $errors->has_errors() ? $errors : $sanitized;
@@ -435,7 +435,7 @@ class CPT_Validation {
         if (!is_user_logged_in()) {
             return new WP_Error(
                 'not_logged_in',
-                __('You must be logged in to perform this action', 'crypto-portfolio-tracker'),
+                __('You must be logged in to perform this action', 'Crypto-Portfolio-Tracker'),
                 array('status' => 401)
             );
         }
@@ -444,7 +444,7 @@ class CPT_Validation {
         if (!self::user_can_perform_action($action)) {
             return new WP_Error(
                 'insufficient_permissions',
-                __('You do not have permission to perform this action', 'crypto-portfolio-tracker'),
+                __('You do not have permission to perform this action', 'Crypto-Portfolio-Tracker'),
                 array('status' => 403)
             );
         }

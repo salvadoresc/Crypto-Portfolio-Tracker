@@ -8,8 +8,14 @@
         return;
     }
 
-    const { createElement: h, useState, useEffect, useMemo } = wp.element;
+    const { createElement, useState, useEffect, useMemo } = wp.element;
+    const h = createElement; // Declaración separada y más segura
     const { apiFetch } = wp;
+
+    // Helper para strings traducidas
+    const __ = (key, fallback = key) => {
+        return (window.cptAjax?.strings?.[key]) || fallback;
+    };
 
     // Hook personalizado para la API
     const useAPI = () => {
@@ -263,7 +269,7 @@
             h('h3', { 
                 key: 'title',
                 className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-            }, editingTransaction ? 'Editar Transacción' : 'Añadir Transacción'),
+            }, editingTransaction ? __('edit_transaction', 'Editar Transacción') : __('add_transaction', 'Añadir Transacción')),
             
             h('form', { 
                 key: 'form',
@@ -279,7 +285,7 @@
                         key: 'label',
                         className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                         style: { display: 'block' }
-                    }, 'Criptomoneda'),
+                    }, __('cryptocurrency', 'Criptomoneda')),
                     h('input', {
                         key: 'input',
                         type: 'text',
@@ -346,21 +352,21 @@
                         h('label', { 
                             className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                             style: { display: 'block' }
-                        }, 'Tipo'),
+                        }, __('type', 'Tipo')),
                         h('select', {
                             value: formData.type,
                             onChange: (e) => updateFormData('type', e.target.value),
                             className: 'cpt-select'
                         }, [
-                            h('option', { key: 'buy', value: 'buy' }, 'Compra'),
-                            h('option', { key: 'sell', value: 'sell' }, 'Venta')
+                            h('option', { key: 'buy', value: 'buy' }, __('buy', 'Compra')),
+                            h('option', { key: 'sell', value: 'sell' }, __('sell', 'Venta'))
                         ])
                     ]),
                     h('div', { key: 'date' }, [
                         h('label', { 
                             className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                             style: { display: 'block' }
-                        }, 'Fecha'),
+                        }, __('date', 'Fecha')),
                         h('input', {
                             type: 'date',
                             value: formData.date,
@@ -380,7 +386,7 @@
                         h('label', { 
                             className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                             style: { display: 'block' }
-                        }, 'Precio por Unidad ($)'),
+                        }, __('price_per_unit', 'Precio por Unidad ($)')),
                         h('input', {
                             type: 'number',
                             step: '0.00000001',
@@ -392,13 +398,13 @@
                         }),
                         h('small', {
                             style: { color: '#9ca3af', fontSize: '0.75rem' }
-                        }, 'Precio de la crypto en ese momento')
+                        }, __('price_help', 'Precio de la crypto en ese momento'))
                     ]),
                     h('div', { key: 'quantity' }, [
                         h('label', { 
                             className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                             style: { display: 'block' }
-                        }, 'Cantidad Exacta Recibida'),
+                        }, __('exact_quantity', 'Cantidad Exacta Recibida')),
                         h('input', {
                             type: 'number',
                             step: '0.00000001',
@@ -410,7 +416,7 @@
                         }),
                         h('small', {
                             style: { color: '#9ca3af', fontSize: '0.75rem' }
-                        }, 'Cantidad exacta que recibiste (según tu exchange)')
+                        }, __('quantity_help', 'Cantidad exacta que recibiste (según tu exchange)'))
                     ])
                 ]),
 
@@ -419,7 +425,7 @@
                     h('label', { 
                         className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                         style: { display: 'block' }
-                    }, 'Monto Total Invertido ($)'),
+                    }, __('total_invested', 'Monto Total Invertido ($)')),
                     h('input', {
                         type: 'number',
                         step: '0.01',
@@ -431,7 +437,7 @@
                     }),
                     h('small', {
                         style: { color: '#9ca3af', fontSize: '0.75rem' }
-                    }, 'Monto total que gastaste (incluyendo comisiones)')
+                    }, __('amount_help', 'Monto total que gastaste (incluyendo comisiones)'))
                 ]),
 
                 // Mostrar cálculo de verificación
@@ -445,11 +451,11 @@
                     }
                 }, [
                     h('div', { style: { color: '#c4b5fd', fontSize: '0.875rem' } }, [
-                        h('strong', {}, 'Verificación: '),
+                        h('strong', {}, __('verification', 'Verificación: ')),
                         h('span', { style: { color: '#10b981' } }, 
                           `${formData.quantity} × $${formData.price} = $${(parseFloat(formData.quantity || 0) * parseFloat(formData.price || 0)).toFixed(2)}`),
                         h('div', { style: { fontSize: '0.75rem', marginTop: '0.25rem', opacity: 0.8 } }, 
-                          `💡 El monto total puede ser diferente por comisiones del exchange`)
+                          __('fee_note', '💡 El monto total puede ser diferente por comisiones del exchange'))
                     ])
                 ]),
 
@@ -458,7 +464,7 @@
                     h('label', { 
                         className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                         style: { display: 'block' }
-                    }, 'Exchange (opcional)'),
+                    }, __('exchange_optional', 'Exchange (opcional)')),
                     h('input', {
                         type: 'text',
                         placeholder: 'Binance, Coinbase, etc.',
@@ -473,9 +479,9 @@
                     h('label', { 
                         className: 'cpt-text-white cpt-font-medium cpt-mb-2',
                         style: { display: 'block' }
-                    }, 'Notas (opcional)'),
+                    }, __('notes_optional', 'Notas (opcional)')),
                     h('textarea', {
-                        placeholder: 'Notas adicionales...',
+                        placeholder: __('notes_placeholder', 'Notas adicionales...'),
                         value: formData.notes,
                         onChange: (e) => updateFormData('notes', e.target.value),
                         className: 'cpt-textarea'
@@ -491,13 +497,13 @@
                         key: 'submit',
                         type: 'submit',
                         className: 'cpt-btn cpt-btn-primary'
-                    }, editingTransaction ? 'Actualizar Transacción' : 'Añadir Transacción'),
+                    }, editingTransaction ? __('update_transaction', 'Actualizar Transacción') : __('add_transaction', 'Añadir Transacción')),
                     h('button', {
                         key: 'cancel',
                         type: 'button',
                         onClick: onCancel,
                         className: 'cpt-btn cpt-btn-secondary'
-                    }, 'Cancelar')
+                    }, __('cancel', 'Cancelar'))
                 ])
             ])
         ]);
@@ -665,11 +671,11 @@
                     h('h2', { 
                         key: 'title',
                         className: 'cpt-text-2xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                    }, 'Acceso Requerido'),
+                    }, __('login_required', 'Acceso Requerido')),
                     h('p', { 
                         key: 'description',
                         style: { color: '#c4b5fd', marginBottom: '1.5rem' }
-                    }, 'Necesitas iniciar sesión para ver tu portfolio de criptomonedas.'),
+                    }, __('login_message', 'Necesitas iniciar sesión para ver tu portfolio de criptomonedas.')),
                     h('div', { 
                         key: 'buttons',
                         className: 'cpt-flex cpt-gap-4 cpt-justify-center' 
@@ -678,12 +684,12 @@
                             key: 'login',
                             href: cptAjax.loginUrl || '#',
                             className: 'cpt-btn cpt-btn-primary'
-                        }, 'Iniciar Sesión'),
+                        }, __('login_button', 'Iniciar Sesión')),
                         h('a', {
                             key: 'register',
                             href: cptAjax.registerUrl || '#',
                             className: 'cpt-btn cpt-btn-secondary'
-                        }, 'Registrarse')
+                        }, __('register_button', 'Registrarse'))
                     ])
                 ])
             ]);
@@ -706,7 +712,7 @@
                     h('div', { 
                         key: 'text',
                         className: 'cpt-text-white cpt-text-xl' 
-                    }, 'Cargando portfolio...')
+                    }, __('loading', 'Cargando portfolio...'))
                 ])
             ]);
         }
@@ -726,11 +732,11 @@
                     h('h1', { 
                         key: 'title',
                         className: 'cpt-title' 
-                    }, 'Dashboard de Inversiones Crypto'),
+                    }, __('dashboard_title', 'Dashboard de Inversiones Crypto')),
                     h('p', { 
                         key: 'subtitle',
                         className: 'cpt-subtitle' 
-                    }, 'Análisis completo de tu portafolio crypto')
+                    }, __('dashboard_subtitle', 'Análisis completo de tu portafolio crypto'))
                 ]),
 
                 // Error handling
@@ -761,12 +767,12 @@
                                 setShowTransactionForm(!showTransactionForm);
                             },
                             className: 'cpt-btn cpt-btn-primary'
-                        }, showTransactionForm ? 'Cancelar' : 'Añadir Transacción'),
+                        }, showTransactionForm ? __('cancel', 'Cancelar') : __('add_transaction', 'Añadir Transacción')),
                         h('button', {
                             key: 'reload',
                             onClick: reload,
                             className: 'cpt-btn cpt-btn-secondary'
-                        }, 'Actualizar Precios')
+                        }, __('refresh_prices', 'Actualizar Precios'))
                     ])
                 ]),
 
@@ -785,28 +791,28 @@
                 }, [
                     h(StatsCard, {
                         key: 'invested',
-                        title: 'Inversión Total',
+                        title: __('total_investment', 'Inversión Total'),
                         value: `${portfolioStats.totalInvested.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                         icon: '💰',
                         color: 'green'
                     }),
                     h(StatsCard, {
                         key: 'value',
-                        title: 'Valor Actual',
+                        title: __('current_value', 'Valor Actual'),
                         value: `${portfolioStats.totalValue.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                         icon: '🎯',
                         color: 'blue'
                     }),
                     h(StatsCard, {
                         key: 'pnl',
-                        title: 'P&L Total',
+                        title: __('total_pnl', 'P&L Total'),
                         value: `${portfolioStats.totalProfit.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`,
                         icon: portfolioStats.totalProfit >= 0 ? '📈' : '📉',
                         color: portfolioStats.totalProfit >= 0 ? 'green' : 'red'
                     }),
                     h(StatsCard, {
                         key: 'roi',
-                        title: 'ROI %',
+                        title: __('roi_percent', 'ROI %'),
                         value: `${portfolioStats.totalProfitPercent.toFixed(2)}%`,
                         icon: '📊',
                         color: portfolioStats.totalProfitPercent >= 0 ? 'green' : 'red'
@@ -826,7 +832,7 @@
                         h('h3', { 
                             key: 'title',
                             className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                        }, 'Evolución de Inversiones'),
+                        }, __('investment_evolution', 'Evolución de Inversiones')),
                         h('div', { 
                             key: 'chart-container',
                             style: { width: '100%', height: '300px' }
@@ -884,7 +890,7 @@
                         h('h3', { 
                             key: 'title',
                             className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                        }, 'Distribución del Portfolio'),
+                        }, __('portfolio_distribution', 'Distribución del Portfolio')),
                         chartData.distributionData.length > 0 ? h('div', { 
                             key: 'chart-container',
                             style: { width: '100%', height: '300px' }
@@ -913,7 +919,7 @@
                                             borderRadius: '8px',
                                             color: 'white'
                                         },
-                                        formatter: (value) => [`${value.toFixed(2)}`, 'Valor']
+                                        formatter: (value) => [`${value.toFixed(2)}`, __('value', 'Valor')]
                                     })
                                 ])
                             ])
@@ -921,7 +927,7 @@
                             key: 'no-data',
                             className: 'cpt-text-center cpt-text-white',
                             style: { padding: '2rem' }
-                        }, 'Sin datos para mostrar')
+                        }, __('no_data', 'Sin datos para mostrar'))
                     ])
                 ]),
 
@@ -933,7 +939,7 @@
                     h('h3', { 
                         key: 'title',
                         className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                    }, 'Performance por Crypto'),
+                    }, __('performance_per_crypto', 'Performance por Crypto')),
                     h('div', { 
                         key: 'chart-container',
                         style: { width: '100%', height: '300px' }
@@ -990,7 +996,7 @@
                         h('h3', { 
                             key: 'title',
                             className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                        }, 'Detalle por Crypto'),
+                        }, __('crypto_detail', 'Detalle por Crypto')),
                         h('div', { 
                             key: 'table-container',
                             style: { overflowX: 'auto' }
@@ -1002,11 +1008,11 @@
                                 h('thead', { key: 'thead' }, [
                                     h('tr', { key: 'header-row' }, [
                                         h('th', { key: 'crypto' }, 'Crypto'),
-                                        h('th', { key: 'amount', className: 'text-right' }, 'Cantidad'),
-                                        h('th', { key: 'invested', className: 'text-right' }, 'Invertido'),
-                                        h('th', { key: 'avg-price', className: 'text-right' }, 'Precio Prom.'),
-                                        h('th', { key: 'current-price', className: 'text-right' }, 'Precio Actual'),
-                                        h('th', { key: 'current-value', className: 'text-right' }, 'Valor Actual'),
+                                        h('th', { key: 'amount', className: 'text-right' }, __('amount', 'Cantidad')),
+                                        h('th', { key: 'invested', className: 'text-right' }, __('invested', 'Invertido')),
+                                        h('th', { key: 'avg-price', className: 'text-right' }, __('avg_price', 'Precio Prom.')),
+                                        h('th', { key: 'current-price', className: 'text-right' }, __('current_price', 'Precio Actual')),
+                                        h('th', { key: 'current-value', className: 'text-right' }, __('current_value', 'Valor Actual')),
                                         h('th', { key: 'pnl', className: 'text-right' }, 'P&L'),
                                         h('th', { key: 'roi', className: 'text-right' }, 'ROI %')
                                     ])
@@ -1059,16 +1065,16 @@
                         h('h3', { 
                             key: 'title',
                             className: 'cpt-empty-title' 
-                        }, 'Portfolio Vacío'),
+                        }, __('empty_portfolio_title', 'Portfolio Vacío')),
                         h('p', { 
                             key: 'description',
                             className: 'cpt-empty-description' 
-                        }, '¡Empieza añadiendo tu primera transacción para ver tu portfolio en acción!'),
+                        }, __('empty_portfolio_message', '¡Empieza añadiendo tu primera transacción para ver tu portfolio en acción!')),
                         h('button', {
                             key: 'add-button',
                             onClick: () => setShowTransactionForm(true),
                             className: 'cpt-btn cpt-btn-primary'
-                        }, 'Añadir Primera Transacción')
+                        }, __('add_first_transaction', 'Añadir Primera Transacción'))
                     ]),
 
                 // Historial de transacciones
@@ -1079,7 +1085,7 @@
                     h('h3', { 
                         key: 'title',
                         className: 'cpt-text-xl cpt-font-bold cpt-text-white cpt-mb-4' 
-                    }, 'Historial de Transacciones'),
+                    }, __('transaction_history', 'Historial de Transacciones')),
                     h('div', { 
                         key: 'table-container',
                         style: { overflowX: 'auto' }
@@ -1090,13 +1096,13 @@
                         }, [
                             h('thead', { key: 'thead' }, [
                                 h('tr', { key: 'header-row' }, [
-                                    h('th', { key: 'date' }, 'Fecha'),
+                                    h('th', { key: 'date' }, __('date', 'Fecha')),
                                     h('th', { key: 'crypto' }, 'Crypto'),
-                                    h('th', { key: 'type' }, 'Tipo'),
-                                    h('th', { key: 'quantity', className: 'text-right' }, 'Cantidad'),
-                                    h('th', { key: 'price', className: 'text-right' }, 'Precio'),
-                                    h('th', { key: 'total', className: 'text-right' }, 'Total'),
-                                    h('th', { key: 'actions' }, 'Acciones')
+                                    h('th', { key: 'type' }, __('type', 'Tipo')),
+                                    h('th', { key: 'quantity', className: 'text-right' }, __('quantity', 'Cantidad')),
+                                    h('th', { key: 'price', className: 'text-right' }, __('price', 'Precio')),
+                                    h('th', { key: 'total', className: 'text-right' }, __('total', 'Total')),
+                                    h('th', { key: 'actions' }, __('actions', 'Acciones'))
                                 ])
                             ]),
                             h('tbody', { key: 'tbody' }, 
@@ -1116,7 +1122,7 @@
                                                     color: tx.transaction_type === 'buy' ? '#10b981' : '#ef4444',
                                                     fontWeight: 'bold'
                                                 }
-                                            }, tx.transaction_type === 'buy' ? '🟢 Compra' : '🔴 Venta')
+                                            }, tx.transaction_type === 'buy' ? '🟢 ' + __('buy', 'Compra') : '🔴 ' + __('sell', 'Venta'))
                                         ]),
                                         h('td', { key: 'quantity', className: 'text-right' }, amount.toFixed(8)),
                                         h('td', { key: 'price', className: 'text-right' }, `${price.toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`),
@@ -1176,7 +1182,7 @@
                         color: '#fbbf24',
                         textAlign: 'center'
                     }
-                }, 'Los gráficos están cargando... Si no aparecen, recarga la página.')
+                }, __('charts_loading', 'Los gráficos están cargando... Si no aparecen, recarga la página.'))
             ])
         ]);
     };
@@ -1207,5 +1213,11 @@
             }
         }
     });
-
+// CÓDIGO DE DIAGNÓSTICO TEMPORAL - AGREGAR AL FINAL DE dashboard.js
+console.log('🔍 CRYPTO DASHBOARD DEBUG - INICIANDO...');
+console.log('1. WordPress disponible:', typeof wp !== 'undefined');
+console.log('2. Container encontrado:', !!document.getElementById('crypto-portfolio-dashboard'));
+console.log('3. cptAjax disponible:', typeof window.cptAjax !== 'undefined');
+console.log('4. Usuario logueado:', window.cptAjax?.isLoggedIn);
+console.log('5. Recharts disponible:', typeof window.Recharts !== 'undefined');
 })(jQuery);

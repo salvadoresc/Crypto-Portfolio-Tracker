@@ -55,71 +55,85 @@ class CryptoPortfolioTracker {
         // REST
         add_action('rest_api_init', array($this, 'register_api_routes'));
 
-        // Frontend
-        add_action('wp_enqueue_scripts', array($this, 'enqueue_scripts'));
+        // Frontend - MODIFICADO: usar wp_loaded para asegurar que el usuario esté disponible
+        add_action('wp_loaded', array($this, 'init_frontend_hooks'));
         add_action('admin_enqueue_scripts', array($this, 'enqueue_admin_scripts'));
 
         // Shortcode
         add_shortcode('crypto_dashboard', array($this, 'render_dashboard_shortcode'));
 
         // Internationalization
-        add_action('plugins_loaded', array($this, 'load_textdomain'));
+        add_action('plugins_loaded', array($this, 'load_textdomain'), 1);
+    }
+
+    /**
+     * Inicializar hooks del frontend cuando WordPress esté completamente cargado
+     */
+    public function init_frontend_hooks() {
+        // Verificar si estamos en una página con el shortcode
+        if (!is_admin()) {
+            add_action('wp_enqueue_scripts', array($this, 'maybe_enqueue_scripts'));
+        }
     }
 
     /**
      * Load plugin text domain for translations
      */
     public function load_textdomain() {
-        load_plugin_textdomain(
+        $loaded = load_plugin_textdomain(
             CPT_TEXT_DOMAIN,
             false,
             dirname(plugin_basename(__FILE__)) . '/languages/'
         );
+        
+        // Debug temporal para verificar carga de traducciones
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('CPT Textdomain loaded: ' . ($loaded ? 'YES' : 'NO'));
+            error_log('CPT Current locale: ' . get_locale());
+        }
     }
 
-    public function plugins_loaded() {
-        // Load translations - this is where we can add more functionality
-    }
-
-    public function init() {
-        // Ensure tables in runtime in case activation failed
-        $this->check_and_create_tables();
-    }
-
-    private function load_dependencies() {
-        // Safe loading of dependencies
+    public function load_dependencies() {
         $files = array(
             'includes/class-database.php',
-            'includes/class-api-handler.php',
-            'includes/class-user-portfolio.php',
+            'includes/class-validation.php',
             'includes/class-coingecko-api.php',
+            'includes/class-user-portfolio.php',
+            'includes/class-api-handler.php',
         );
 
-        foreach ($files as $rel) {
-            $path = CPT_PLUGIN_PATH . $rel;
+        foreach ($files as $file) {
+            $path = CPT_PLUGIN_PATH . $file;
             if (file_exists($path)) {
                 require_once $path;
+            } else {
+                error_log("CPT: Missing file - $file");
             }
         }
     }
 
-    private function check_and_create_tables() {
-        $tables_created = get_option('cpt_tables_created', false);
-        $db_version     = get_option('cpt_db_version', '0');
+    public function init() {
+        // Debug info temporal
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('=== CPT DEBUG i18n ===');
+            error_log('Locale WP: ' . get_locale());
+            error_log('Strings en cptAjax: ' . (isset($GLOBALS['cptAjax']) ? 'defined' : 'undefined'));
+            error_log('Dashboard title ES: ' . __('Dashboard de Inversiones Crypto', CPT_TEXT_DOMAIN));
+            error_log('Dashboard title EN: ' . __('Crypto Investment Dashboard', CPT_TEXT_DOMAIN));
+            error_log('Usuario logueado: ' . (is_user_logged_in() ? 'true' : 'false'));
+            
+            // Debug de scripts cargados
+            global $wp_scripts;
+            $recharts_loaded = wp_script_is('recharts', 'enqueued') || wp_script_is('recharts', 'done');
+            $dashboard_loaded = wp_script_is('cpt-dashboard', 'enqueued') || wp_script_is('cpt-dashboard', 'done');
+            error_log('Scripts cargados: ' . ($recharts_loaded ? 'true' : 'false') . ' ' . ($dashboard_loaded ? 'true' : 'false'));
+        }
+    }
 
-        if (!$tables_created || $db_version !== CPT_VERSION) {
-            global $wpdb;
-
-            $portfolio_table    = $wpdb->prefix . 'cpt_portfolio';
-            $transactions_table = $wpdb->prefix . 'cpt_transactions';
-            $watchlist_table    = $wpdb->prefix . 'cpt_watchlist';
-
-            $portfolio_exists    = ($wpdb->get_var("SHOW TABLES LIKE '{$portfolio_table}'") === $portfolio_table);
-            $transactions_exists = ($wpdb->get_var("SHOW TABLES LIKE '{$transactions_table}'") === $transactions_table);
-            $watchlist_exists    = ($wpdb->get_var("SHOW TABLES LIKE '{$watchlist_table}'") === $watchlist_table);
-
-            if (!$portfolio_exists || !$transactions_exists || !$watchlist_exists) {
-                // Explicit loading to ensure DB class
+    public function plugins_loaded() {
+        // Create tables if needed
+        if (!get_option('cpt_tables_created', false)) {
+            if (file_exists(CPT_PLUGIN_PATH . 'includes/class-database.php')) {
                 require_once ABSPATH . 'wp-admin/includes/upgrade.php';
                 require_once CPT_PLUGIN_PATH . 'includes/class-database.php';
 
@@ -138,96 +152,144 @@ class CryptoPortfolioTracker {
         }
     }
 
-    public function enqueue_scripts() {
-        // Only load on pages containing the shortcode or for logged in users
+    /**
+     * NUEVA FUNCIÓN: Verificar si debe cargar scripts y cargarlos condicionalmente
+     */
+    public function maybe_enqueue_scripts() {
         global $post;
-        $load_scripts = false;
-
-        // Check if we're on a page with the shortcode
+        
+        // Solo cargar si:
+        // 1. Estamos en una página singular
+        // 2. El post tiene el shortcode crypto_dashboard
+        // 3. O si estamos en una página donde sabemos que se necesita (para casos especiales)
+        $should_load = false;
+        
         if (is_singular() && $post && has_shortcode($post->post_content, 'crypto_dashboard')) {
-            $load_scripts = true;
+            $should_load = true;
         }
-
-        // Or if user is logged in (to load on any page)
-        if (is_user_logged_in()) {
-            $load_scripts = true;
+        
+        // Permitir que otros plugins/temas fuercen la carga
+        $should_load = apply_filters('cpt_should_load_scripts', $should_load);
+        
+        if ($should_load) {
+            $this->enqueue_scripts();
         }
+    }
 
-        if ($load_scripts) {
-            // WordPress dependencies
-            wp_enqueue_script('wp-element');
-            wp_enqueue_script('wp-api-fetch');
-            wp_enqueue_script('wp-url');
+    /**
+     * FUNCIÓN CORREGIDA: Cargar scripts sin restricciones de usuario
+     */
+    public function enqueue_scripts() {
+        // NO verificar permisos de usuario aquí - dejar que el shortcode maneje eso
+        
+        // WordPress dependencies
+        wp_enqueue_script('wp-element');
+        wp_enqueue_script('wp-api-fetch');
+        wp_enqueue_script('wp-url');
 
-            // 1) PropTypes UMD
-            wp_enqueue_script(
-                'prop-types',
-                'https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js',
-                array(), null, true
-            );
+        // 1) PropTypes UMD
+        wp_enqueue_script(
+            'prop-types',
+            'https://cdnjs.cloudflare.com/ajax/libs/prop-types/15.8.1/prop-types.min.js',
+            array(), null, true
+        );
 
-            // 2) Recharts UMD (v2.x)
-            wp_enqueue_script(
-                'recharts',
-                'https://cdnjs.cloudflare.com/ajax/libs/recharts/2.12.7/Recharts.min.js',
-                array('wp-element','prop-types'), // important: depends on wp-element and prop-types
-                null, true
-            );
+        // 2) Recharts UMD (v2.x) - CDN alternativo más confiable
+        wp_enqueue_script(
+            'recharts',
+            'https://unpkg.com/recharts@2.12.7/umd/Recharts.js',
+            array('wp-element','prop-types'), // important: depends on wp-element and prop-types
+            null, true
+        );
 
-            // 3) Shim: expose React/ReactDOM globals for UMD libs
-            wp_add_inline_script(
-                'recharts',
-                'window.React = window.React || (window.wp && wp.element);',
-                'before'
-            );
+        // 3) Shim: expose React/ReactDOM globals for UMD libs
+        wp_add_inline_script(
+            'recharts',
+            'window.React = window.React || (window.wp && wp.element);',
+            'before'
+        );
 
-            // 4) Your dashboard
-            wp_enqueue_script(
-                'cpt-dashboard',
-                plugins_url('assets/js/dashboard.js', __FILE__),
-                array('wp-element','wp-api-fetch','recharts'),
-                CPT_VERSION,
-                true
-            );
+        // 4) Your dashboard
+        wp_enqueue_script(
+            'cpt-dashboard',
+            plugins_url('assets/js/dashboard.js', __FILE__),
+            array('wp-element','wp-api-fetch','recharts'),
+            CPT_VERSION,
+            true
+        );
 
-            wp_localize_script('cpt-dashboard', 'cptAjax', array(
-                'nonce'       => wp_create_nonce('wp_rest'),
-                'isLoggedIn'  => is_user_logged_in(),
-                'loginUrl'    => wp_login_url(),
-                'registerUrl' => function_exists('wp_registration_url') ? wp_registration_url() : wp_login_url(),
-                'strings'     => array(
-                    'login_required' => __('Access Required', CPT_TEXT_DOMAIN),
-                    'login_message' => __('You need to log in to view your cryptocurrency portfolio.', CPT_TEXT_DOMAIN),
-                    'login_button' => __('Log In', CPT_TEXT_DOMAIN),
-                    'register_button' => __('Register', CPT_TEXT_DOMAIN),
-                    'loading' => __('Loading portfolio...', CPT_TEXT_DOMAIN),
-                    'add_transaction' => __('Add Transaction', CPT_TEXT_DOMAIN),
-                    'cancel' => __('Cancel', CPT_TEXT_DOMAIN),
-                    'refresh_prices' => __('Refresh Prices', CPT_TEXT_DOMAIN),
-                    'dashboard_title' => __('Crypto Investment Dashboard', CPT_TEXT_DOMAIN),
-                    'dashboard_subtitle' => __('Complete analysis of your crypto portfolio', CPT_TEXT_DOMAIN),
-                    'total_investment' => __('Total Investment', CPT_TEXT_DOMAIN),
-                    'current_value' => __('Current Value', CPT_TEXT_DOMAIN),
-                    'total_pnl' => __('Total P&L', CPT_TEXT_DOMAIN),
-                    'roi_percent' => __('ROI %', CPT_TEXT_DOMAIN),
-                    'investment_evolution' => __('Investment Evolution', CPT_TEXT_DOMAIN),
-                    'portfolio_distribution' => __('Portfolio Distribution', CPT_TEXT_DOMAIN),
-                    'performance_per_crypto' => __('Performance per Crypto', CPT_TEXT_DOMAIN),
-                    'crypto_detail' => __('Crypto Detail', CPT_TEXT_DOMAIN),
-                    'transaction_history' => __('Transaction History', CPT_TEXT_DOMAIN),
-                    'empty_portfolio_title' => __('Empty Portfolio', CPT_TEXT_DOMAIN),
-                    'empty_portfolio_message' => __('Start by adding your first transaction to see your portfolio in action!', CPT_TEXT_DOMAIN),
-                    'add_first_transaction' => __('Add First Transaction', CPT_TEXT_DOMAIN),
-                )
-            ));
+        // 5) Localizar strings DESPUÉS de cargar traducciones
+        wp_localize_script('cpt-dashboard', 'cptAjax', array(
+            'nonce'       => wp_create_nonce('wp_rest'),
+            'isLoggedIn'  => is_user_logged_in(),
+            'loginUrl'    => wp_login_url(),
+            'registerUrl' => function_exists('wp_registration_url') ? wp_registration_url() : wp_login_url(),
+            'currentUserId' => get_current_user_id(), // AÑADIDO: ID del usuario actual
+            'canRead'     => current_user_can('read'), // AÑADIDO: Verificar capacidades
+            'restUrl'     => rest_url('crypto-portfolio/v1/'), // AÑADIDO: URL base de la API
+            'strings'     => array(
+                'login_required' => __('Access Required', CPT_TEXT_DOMAIN),
+                'login_message' => __('You need to log in to view your cryptocurrency portfolio.', CPT_TEXT_DOMAIN),
+                'dashboard_title' => __('Crypto Investment Dashboard', CPT_TEXT_DOMAIN),
+                'total_portfolio_value' => __('Total Portfolio Value', CPT_TEXT_DOMAIN),
+                'total_invested' => __('Total Invested', CPT_TEXT_DOMAIN),
+                'total_profit_loss' => __('Total P&L', CPT_TEXT_DOMAIN),
+                'portfolio_change_24h' => __('24h Change', CPT_TEXT_DOMAIN),
+                'your_portfolio' => __('Your Portfolio', CPT_TEXT_DOMAIN),
+                'recent_transactions' => __('Recent Transactions', CPT_TEXT_DOMAIN),
+                'add_transaction' => __('Add Transaction', CPT_TEXT_DOMAIN),
+                'add_first_transaction' => __('Add First Transaction', CPT_TEXT_DOMAIN),
+                // Nuevos strings para el formulario
+                'edit_transaction' => __('Edit Transaction', CPT_TEXT_DOMAIN),
+                'cryptocurrency' => __('Cryptocurrency', CPT_TEXT_DOMAIN),
+                'type' => __('Type', CPT_TEXT_DOMAIN),
+                'date' => __('Date', CPT_TEXT_DOMAIN),
+                'buy' => __('Buy', CPT_TEXT_DOMAIN),
+                'sell' => __('Sell', CPT_TEXT_DOMAIN),
+                'price_per_unit' => __('Price per Unit ($)', CPT_TEXT_DOMAIN),
+                'price_help' => __('Price of the crypto at that time', CPT_TEXT_DOMAIN),
+                'exact_quantity' => __('Exact Quantity Received', CPT_TEXT_DOMAIN),
+                'quantity_help' => __('Exact quantity you received (according to your exchange)', CPT_TEXT_DOMAIN),
+                'total_invested' => __('Total Amount Invested ($)', CPT_TEXT_DOMAIN),
+                'amount_help' => __('Total amount you spent (including fees)', CPT_TEXT_DOMAIN),
+                'verification' => __('Verification: ', CPT_TEXT_DOMAIN),
+                'fee_note' => __('💡 The total amount may be different due to exchange fees', CPT_TEXT_DOMAIN),
+                'exchange_optional' => __('Exchange (optional)', CPT_TEXT_DOMAIN),
+                'notes_optional' => __('Notes (optional)', CPT_TEXT_DOMAIN),
+                'notes_placeholder' => __('Additional notes...', CPT_TEXT_DOMAIN),
+                'update_transaction' => __('Update Transaction', CPT_TEXT_DOMAIN),
+                'amount' => __('Amount', CPT_TEXT_DOMAIN),
+                'invested' => __('Invested', CPT_TEXT_DOMAIN),
+                'avg_price' => __('Avg Price', CPT_TEXT_DOMAIN),
+                'current_price' => __('Current Price', CPT_TEXT_DOMAIN),
+                'current_value' => __('Current Value', CPT_TEXT_DOMAIN),
+                'quantity' => __('Quantity', CPT_TEXT_DOMAIN),
+                'price' => __('Price', CPT_TEXT_DOMAIN),
+                'total' => __('Total', CPT_TEXT_DOMAIN),
+                'actions' => __('Actions', CPT_TEXT_DOMAIN),
+                'value' => __('Value', CPT_TEXT_DOMAIN),
+                'no_data' => __('No data to show', CPT_TEXT_DOMAIN),
+                'charts_loading' => __('Charts are loading... If they don\'t appear, reload the page.', CPT_TEXT_DOMAIN),
+                
+                // AÑADIDOS: Mensajes de error específicos para debugging
+                'error_loading_portfolio' => __('Error loading portfolio data', CPT_TEXT_DOMAIN),
+                'error_api_connection' => __('Could not connect to API', CPT_TEXT_DOMAIN),
+                'error_insufficient_permissions' => __('You do not have permission to view this content', CPT_TEXT_DOMAIN),
+                'error_not_logged_in' => __('You must be logged in to access this feature', CPT_TEXT_DOMAIN),
+            )
+        ));
 
-            // Styles
-            wp_enqueue_style(
-                'crypto-dashboard-css',
-                CPT_PLUGIN_URL . 'assets/css/dashboard.css',
-                array(),
-                CPT_VERSION
-            );
+        // Styles
+        wp_enqueue_style(
+            'crypto-dashboard-css',
+            CPT_PLUGIN_URL . 'assets/css/dashboard.css',
+            array(),
+            CPT_VERSION
+        );
+        
+        // Debug: Log que los scripts se están cargando
+        if (defined('WP_DEBUG') && WP_DEBUG) {
+            error_log('CPT: Scripts enqueued for user ID: ' . get_current_user_id() . ', can read: ' . (current_user_can('read') ? 'yes' : 'no'));
         }
     }
 
@@ -245,22 +307,39 @@ class CryptoPortfolioTracker {
         }
     }
 
+    /**
+     * FUNCIÓN CORREGIDA: Shortcode sin restricciones de permisos en el nivel de carga
+     */
     public function render_dashboard_shortcode($atts) {
         $atts = shortcode_atts(array(
             'user_id' => get_current_user_id(),
             'public'  => 'false',
         ), $atts);
 
-        // If not logged in and not public, show login form
+        // Si no está logueado y no es público, mostrar formulario de login
         if (!is_user_logged_in() && $atts['public'] !== 'true') {
             return $this->render_login_form();
         }
 
-        // Ensure scripts load
+        // CAMBIO IMPORTANTE: Asegurar que los scripts se cargan cuando se renderiza el shortcode
         $this->enqueue_scripts();
 
-        // Container for React
-        return '<div id="crypto-portfolio-dashboard" data-user-id="' . esc_attr($atts['user_id']) . '"></div>';
+        // Contenedor para React con datos adicionales para debugging
+        $container_atts = array(
+            'id' => 'crypto-portfolio-dashboard',
+            'data-user-id' => esc_attr($atts['user_id']),
+            'data-logged-in' => is_user_logged_in() ? '1' : '0',
+            'data-can-read' => current_user_can('read') ? '1' : '0',
+            'data-plugin-version' => CPT_VERSION,
+        );
+
+        $container_html = '<div';
+        foreach ($container_atts as $key => $value) {
+            $container_html .= ' ' . $key . '="' . $value . '"';
+        }
+        $container_html .= '></div>';
+
+        return $container_html;
     }
 
     private function render_login_form() {
@@ -341,110 +420,29 @@ class CryptoPortfolioTracker {
     }
 }
 
-/**
- * Initialize singleton
- */
-function init_crypto_portfolio_tracker_singleton() {
+// === Plugin Activation/Deactivation ===
+
+register_activation_hook(__FILE__, function() {
+    // Flush rewrite rules
+    flush_rewrite_rules();
+    
+    // Set activation flag
+    update_option('cpt_plugin_activated', true);
+    update_option('cpt_activation_time', current_time('timestamp'));
+});
+
+register_deactivation_hook(__FILE__, function() {
+    // Clear any scheduled events
+    wp_clear_scheduled_hook('cpt_daily_cache_cleanup');
+    
+    // Flush rewrite rules
+    flush_rewrite_rules();
+});
+
+// === Initialize Plugin ===
+function cpt_init() {
     return CryptoPortfolioTracker::get_instance();
 }
-add_action('plugins_loaded', 'init_crypto_portfolio_tracker_singleton');
 
-// ======================================================================
-// ============== ACTIVATION / DEACTIVATION AT FILE LEVEL =============
-// ======================================================================
-
-/**
- * Plugin activation
- * - Creates tables with dbDelta
- * - Creates page with shortcode
- * - Handles network activation (multisite)
- */
-function cpt_plugin_activate($network_wide) {
-    // Ensure DB dependencies
-    require_once ABSPATH . 'wp-admin/includes/upgrade.php';
-    require_once CPT_PLUGIN_PATH . 'includes/class-database.php';
-
-    if (is_multisite() && $network_wide) {
-        $sites = get_sites(array('fields' => 'ids'));
-        foreach ($sites as $blog_id) {
-            switch_to_blog($blog_id);
-            cpt_run_activation_for_blog();
-            restore_current_blog();
-        }
-    } else {
-        cpt_run_activation_for_blog();
-    }
-
-    flush_rewrite_rules();
-}
-register_activation_hook(__FILE__, 'cpt_plugin_activate');
-
-/**
- * Activation logic per site (blog)
- */
-function cpt_run_activation_for_blog() {
-    if (class_exists('CPT_Database')) {
-        $db = new CPT_Database();
-        $db->create_tables();
-    }
-
-    // Create dashboard page if it doesn't exist
-    $page_title   = __('My Crypto Portfolio', CPT_TEXT_DOMAIN);
-    $page_content = '[crypto_dashboard]';
-    $page_check   = get_page_by_title($page_title);
-
-    if (!isset($page_check->ID)) {
-        $page_id = wp_insert_post(array(
-            'post_type'   => 'page',
-            'post_title'  => $page_title,
-            'post_content'=> $page_content,
-            'post_status' => 'publish',
-            'post_author' => get_current_user_id() ?: 1,
-            'post_name'   => 'crypto-portfolio',
-        ));
-
-        if ($page_id) {
-            update_option('cpt_dashboard_page_id', $page_id);
-        }
-    }
-
-    update_option('cpt_tables_created', true);
-    update_option('cpt_db_version', CPT_VERSION);
-}
-
-/**
- * Plugin deactivation
- */
-function cpt_plugin_deactivate() {
-    flush_rewrite_rules();
-}
-register_deactivation_hook(__FILE__, 'cpt_plugin_deactivate');
-
-/**
- * Plugin uninstall - clean up data
- * This function will be called from uninstall.php
- */
-function cpt_plugin_uninstall() {
-    global $wpdb;
-    
-    // Only clean up if user specifically wants to delete data
-    $delete_data = get_option('cpt_delete_data_on_uninstall', false);
-    
-    if ($delete_data) {
-        // Delete tables
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cpt_portfolio");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cpt_transactions");
-        $wpdb->query("DROP TABLE IF EXISTS {$wpdb->prefix}cpt_watchlist");
-        
-        // Delete options
-        delete_option('cpt_tables_created');
-        delete_option('cpt_db_version');
-        delete_option('cpt_settings');
-        delete_option('cpt_dashboard_page_id');
-        delete_option('cpt_delete_data_on_uninstall');
-        
-        // Clear transients
-        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_cpt_api_%'");
-        $wpdb->query("DELETE FROM {$wpdb->options} WHERE option_name LIKE '_transient_timeout_cpt_api_%'");
-    }
-}
+// Start the plugin
+add_action('plugins_loaded', 'cpt_init', 5); // Priority 5 to load early but after basic WordPress
