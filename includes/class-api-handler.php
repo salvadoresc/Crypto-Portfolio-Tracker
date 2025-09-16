@@ -394,64 +394,141 @@ class CPT_API_Handler {
 
     public function add_transaction($request) {
         $user_id = get_current_user_id();
+        $data = $request->get_json_params();
+        
+        // Si no hay datos JSON, intentar obtener de parámetros POST
+        if (empty($data)) {
+            $data = $request->get_params();
+        }
+        
+        // Log para debug
+        error_log('CPT: Datos recibidos para transacción: ' . print_r($data, true));
 
-        $coin_id        = sanitize_text_field($request->get_param('coin_id'));
-        $coin_symbol    = sanitize_text_field($request->get_param('coin_symbol'));
-        $coin_name      = sanitize_text_field($request->get_param('coin_name'));
-        $transaction_type = sanitize_text_field($request->get_param('transaction_type'));
-        $amount         = (float) $request->get_param('amount');
-        $price_per_coin = (float) $request->get_param('price_per_coin');
-        $total_cost     = (float) $request->get_param('total_cost');
-        $transaction_date = sanitize_text_field($request->get_param('transaction_date'));
-        $notes          = sanitize_textarea_field($request->get_param('notes'));
+        // Validaciones de campos requeridos - CORREGIDO: usar los nombres exactos que envía el frontend
+        $required_fields = array(
+            'coin_symbol' => 'Cryptocurrency Symbol', 
+            'coin_name' => 'Cryptocurrency Name',
+            'type' => 'Transaction Type',        // Frontend envía "type"
+            'amount' => 'Amount',                // Frontend envía "amount"
+            'price' => 'Price per Coin',         // Frontend envía "price"
+            'total' => 'Total Cost',             // Frontend envía "total"
+            'date' => 'Transaction Date'         // Frontend envía "date"
+        );
 
-        // Validaciones
-        if (empty($coin_id) || empty($transaction_type) || $amount <= 0 || $price_per_coin < 0) {
-            return $this->fail('invalid_data', __('Invalid transaction data', 'Crypto-Portfolio-Tracker'));
+        foreach ($required_fields as $field => $label) {
+            if (!isset($data[$field]) || $data[$field] === '' || $data[$field] === null) {
+                error_log("CPT: Campo faltante: {$field} = " . (isset($data[$field]) ? $data[$field] : 'NOT_SET'));
+                return $this->fail('missing_field', "Campo requerido faltante: {$label}", 400);
+            }
         }
 
+        // Validar tipo de transacción
+        $transaction_type = strtolower(sanitize_text_field($data['type']));
         if (!in_array($transaction_type, array('buy', 'sell'), true)) {
-            return $this->fail('invalid_type', __('Invalid transaction type', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('invalid_type', 'Tipo de transacción inválido. Debe ser "buy" o "sell"', 400);
         }
 
-        // Validar fecha
+        // Validar y sanitizar campos numéricos
+        $amount = (float) $data['amount'];      // Total amount invested (from frontend)
+        $price_per_coin = (float) $data['price']; // Price per coin (from frontend) 
+        $total_cost = (float) $data['total'];   // Should be quantity * price (from frontend)
+
+        if ($amount <= 0) {
+            return $this->fail('invalid_amount', 'La cantidad debe ser mayor a 0', 400);
+        }
+
+        if ($price_per_coin < 0) {
+            return $this->fail('invalid_price', 'El precio no puede ser negativo', 400);
+        }
+
+        if ($total_cost <= 0) {
+            return $this->fail('invalid_total', 'El total debe ser mayor a 0', 400);
+        }
+
+        // Sanitizar campos de texto
+        $coin_id = isset($data['coin_id']) ? sanitize_text_field($data['coin_id']) : strtolower($data['coin_symbol']);
+        $coin_symbol = strtoupper(sanitize_text_field($data['coin_symbol']));
+        $coin_name = sanitize_text_field($data['coin_name']);
+        $notes = isset($data['notes']) ? sanitize_textarea_field($data['notes']) : '';
+
+        // Validar y procesar fecha
+        $transaction_date = sanitize_text_field($data['date']);
+        
+        // Usar la clase de validación si está disponible
         if (class_exists('CPT_Validation')) {
             $valid_date = CPT_Validation::validate_date($transaction_date);
             if (!$valid_date) {
-                return $this->fail('invalid_date', __('Invalid transaction date', 'Crypto-Portfolio-Tracker'));
+                return $this->fail('invalid_date', 'Formato de fecha inválido', 400);
             }
             $transaction_date = $valid_date;
         } else {
-            // Fallback simple
-            $transaction_date = $transaction_date ?: current_time('mysql');
+            // Validación básica de fecha
+            $dt = DateTime::createFromFormat('Y-m-d H:i:s', $transaction_date);
+            if (!$dt) {
+                $dt = DateTime::createFromFormat('Y-m-d', $transaction_date);
+                if ($dt) {
+                    $transaction_date = $dt->format('Y-m-d 00:00:00');
+                } else {
+                    return $this->fail('invalid_date', 'Formato de fecha inválido. Use YYYY-MM-DD', 400);
+                }
+            }
         }
 
-        $transaction_id = $this->database->add_transaction(
-            $user_id,
-            $coin_id,
-            $coin_symbol,
-            $coin_name,
-            $transaction_type,
-            $amount,
-            $price_per_coin,
-            $total_cost,
-            $transaction_date,
-            $notes
+        // Preparar datos para la base de datos usando los nombres de campos que espera la clase Database
+        $transaction_data = array(
+            'coin_id'     => $coin_id,
+            'coin_symbol' => $coin_symbol,
+            'coin_name'   => $coin_name,
+            'type'        => $transaction_type,  // La clase Database espera 'type', no 'transaction_type'
+            'amount'      => $amount,
+            'price'       => $price_per_coin,    // La clase Database espera 'price', no 'price_per_coin'
+            'total'       => $total_cost,        // La clase Database espera 'total', no 'total_cost'
+            'fees'        => isset($data['fees']) ? (float) $data['fees'] : 0.0,
+            'exchange'    => isset($data['exchange']) ? sanitize_text_field($data['exchange']) : '',
+            'notes'       => $notes,
+            'date'        => $transaction_date   // Frontend envía 'date'
         );
 
-        if (!$transaction_id) {
-            return $this->fail('add_failed', __('Failed to add transaction', 'Crypto-Portfolio-Tracker'));
+        // Log de los datos procesados
+        error_log('CPT: Datos procesados para BD: ' . print_r($transaction_data, true));
+
+        // Verificar límites de transacciones si la validación está disponible
+        if (class_exists('CPT_Validation') && !CPT_Validation::user_can_add_transaction($user_id)) {
+            return $this->fail('transaction_limit', 'Has alcanzado el límite máximo de transacciones permitidas', 429);
         }
 
-        // Recalcular portfolio automáticamente
-        if (class_exists('CPT_User_Portfolio')) {
-            $portfolio = new CPT_User_Portfolio($user_id);
-            $portfolio->recalculate_from_transactions();
+        // Intentar guardar en la base de datos
+        $result = $this->database->add_transaction($user_id, $transaction_data);
+        
+        if ($result === false) {
+            error_log('CPT: Error al guardar transacción en BD. Last error: ' . (isset($this->database->wpdb) ? $this->database->wpdb->last_error : 'No disponible'));
+            return $this->fail('save_failed', 'Error al guardar la transacción en la base de datos', 500);
+        }
+
+        // Obtener el ID de la transacción insertada
+        global $wpdb;
+        $transaction_id = $wpdb->insert_id;
+
+        // Recalcular portfolio de manera segura
+        try {
+            // Solo usar el método de Database que sí funciona
+            if (method_exists($this->database, 'recalculate_portfolio_public')) {
+                error_log('CPT: Usando método público de recalculación...');
+                $this->database->recalculate_portfolio_public($user_id, $coin_id);
+                error_log('CPT: Recalculación completada exitosamente');
+            } else {
+                error_log('CPT: Método de recalculación no disponible, pero transacción guardada');
+            }
+        } catch (Exception $e) {
+            error_log('CPT: Error en recalculation: ' . $e->getMessage());
+            // No fallar la transacción por un error de recálculo
         }
 
         return $this->ok(array(
+            'success' => true,
             'message' => __('Transaction added successfully', 'Crypto-Portfolio-Tracker'),
-            'transaction_id' => $transaction_id
+            'transaction_id' => $transaction_id,
+            'data' => $transaction_data
         ), 201);
     }
 
@@ -502,11 +579,17 @@ class CPT_API_Handler {
             return $this->fail('update_failed', __('Failed to update transaction', 'Crypto-Portfolio-Tracker'));
         }
 
-        // Recalcular portfolio
-        if (class_exists('CPT_User_Portfolio')) {
-            $portfolio = new CPT_User_Portfolio($user_id);
-            $portfolio->recalculate_from_transactions();
-        }
+        // Recalcular portfolio de manera segura
+                try {
+                    if (method_exists($this->database, 'recalculate_portfolio_public')) {
+                        $this->database->recalculate_portfolio_public($user_id, $coin_id);
+                        error_log('CPT: Portfolio recalculado exitosamente para user ' . $user_id);
+                    }
+                } catch (Exception $e) {
+                    error_log('CPT: Error en recalculation: ' . $e->getMessage());
+                }
+
+                return $this->ok(array('message' => __('Transaction updated successfully', 'Crypto-Portfolio-Tracker')));
 
         return $this->ok(array('message' => __('Transaction updated successfully', 'Crypto-Portfolio-Tracker')));
     }
@@ -527,10 +610,14 @@ class CPT_API_Handler {
             return $this->fail('delete_failed', __('Failed to delete transaction', 'Crypto-Portfolio-Tracker'));
         }
 
-        // Recalcular portfolio
-        if (class_exists('CPT_User_Portfolio')) {
-            $portfolio = new CPT_User_Portfolio($user_id);
-            $portfolio->recalculate_from_transactions();
+        // Recalcular portfolio de manera segura
+        try {
+            if (method_exists($this->database, 'recalculate_portfolio_public')) {
+                $this->database->recalculate_portfolio_public($user_id, $transaction->coin_id);
+                error_log('CPT: Portfolio recalculado después de eliminar transacción');
+            }
+        } catch (Exception $e) {
+            error_log('CPT: Error en recalculation tras eliminación: ' . $e->getMessage());
         }
 
         return $this->ok(array('message' => __('Transaction deleted successfully', 'Crypto-Portfolio-Tracker')));

@@ -601,4 +601,17 @@ class CPT_Database {
             )
         );
     }
+
+    /**
+     * Método público para recalcular portfolio (wrapper del método privado)
+     */
+    public function recalculate_portfolio_public($user_id, $coin_id) {
+        try {
+            $this->recalculate_portfolio($user_id, $coin_id);
+            return true;
+        } catch (Exception $e) {
+            error_log('CPT DB: Error en recalculate_portfolio: ' . $e->getMessage());
+            return false;
+        }
+    }
 }
