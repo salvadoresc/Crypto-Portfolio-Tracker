@@ -36,10 +36,8 @@ class CPT_Validation {
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field]) || empty($data[$field])) {
-                $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
-                    $label
-                ));
+                /* translators: %s is the name of the required field that is missing */
+                $errors->add('missing_field', sprintf(__('Required field missing: %s', 'Crypto-Portfolio-Tracker'), $label));
             }
         }
 
@@ -73,10 +71,8 @@ class CPT_Validation {
         foreach ($numeric_fields as $field) {
             $value = self::sanitize_float($data[$field]);
             if ($value <= 0) {
-                $errors->add('invalid_' . $field, sprintf(
-                    __('%s must be greater than 0', 'Crypto-Portfolio-Tracker'),
-                    ucfirst($field)
-                ));
+                /* translators: %s is the name of the numeric field that must be greater than 0 */
+                $errors->add('invalid_' . $field, sprintf(__('%s must be greater than 0', 'Crypto-Portfolio-Tracker'), ucfirst($field)));
             }
             $sanitized[$field] = $value;
         }
@@ -133,10 +129,8 @@ class CPT_Validation {
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field])) {
-                $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
-                    $label
-                ));
+                /* translators: %s is the name of the required portfolio field that is missing */
+                $errors->add('missing_field', sprintf(__('Required field missing: %s', 'Crypto-Portfolio-Tracker'), $label));
             }
         }
 
@@ -154,10 +148,8 @@ class CPT_Validation {
         foreach ($numeric_fields as $field) {
             $value = self::sanitize_float($data[$field]);
             if ($value < 0) {
-                $errors->add('invalid_' . $field, sprintf(
-                    __('%s cannot be negative', 'Crypto-Portfolio-Tracker'),
-                    str_replace('_', ' ', ucfirst($field))
-                ));
+                /* translators: %s is the name of the numeric field that cannot be negative */
+                $errors->add('invalid_' . $field, sprintf(__('%s cannot be negative', 'Crypto-Portfolio-Tracker'), str_replace('_', ' ', ucfirst($field))));
             }
             $sanitized[$field] = $value;
         }
@@ -188,10 +180,8 @@ class CPT_Validation {
         // Check required fields
         foreach ($required_fields as $field => $label) {
             if (!isset($data[$field]) || empty($data[$field])) {
-                $errors->add('missing_field', sprintf(
-                    __('Required field missing: %s', 'Crypto-Portfolio-Tracker'),
-                    $label
-                ));
+                /* translators: %s is the name of the required watchlist field that is missing */
+                $errors->add('missing_field', sprintf(__('Required field missing: %s', 'Crypto-Portfolio-Tracker'), $label));
             }
         }
 

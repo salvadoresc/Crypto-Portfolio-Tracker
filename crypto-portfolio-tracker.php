@@ -81,7 +81,7 @@ class CryptoPortfolioTracker {
      */
     public function load_textdomain() {
         $loaded = load_plugin_textdomain(
-            CPT_TEXT_DOMAIN,
+            'crypto-portfolio-tracker',
             false,
             dirname(plugin_basename(__FILE__)) . '/languages/'
         );
@@ -118,8 +118,8 @@ class CryptoPortfolioTracker {
             error_log('=== CPT DEBUG i18n ===');
             error_log('Locale WP: ' . get_locale());
             error_log('Strings en cptAjax: ' . (isset($GLOBALS['cptAjax']) ? 'defined' : 'undefined'));
-            error_log('Dashboard title ES: ' . __('Dashboard de Inversiones Crypto', CPT_TEXT_DOMAIN));
-            error_log('Dashboard title EN: ' . __('Crypto Investment Dashboard', CPT_TEXT_DOMAIN));
+            error_log('Dashboard title ES: ' . __('Dashboard de Inversiones Crypto', 'crypto-portfolio-tracker'));
+            error_log('Dashboard title EN: ' . __('Crypto Investment Dashboard', 'crypto-portfolio-tracker'));
             error_log('Usuario logueado: ' . (is_user_logged_in() ? 'true' : 'false'));
             
             // Debug de scripts cargados
@@ -218,7 +218,7 @@ class CryptoPortfolioTracker {
             true
         );
 
-        // 5) Localizar strings DESPUÉS de cargar traducciones
+        // 5) Localizar strings DESPUÉS de cargar traducciones - CORREGIDO CON TRADUCCIONES EN ESPAÑOL
         wp_localize_script('cpt-dashboard', 'cptAjax', array(
             'nonce'       => wp_create_nonce('wp_rest'),
             'isLoggedIn'  => is_user_logged_in(),
@@ -228,54 +228,58 @@ class CryptoPortfolioTracker {
             'canRead'     => current_user_can('read'), // AÑADIDO: Verificar capacidades
             'restUrl'     => rest_url('crypto-portfolio/v1/'), // AÑADIDO: URL base de la API
             'strings'     => array(
-                'login_required' => __('Access Required', CPT_TEXT_DOMAIN),
-                'login_message' => __('You need to log in to view your cryptocurrency portfolio.', CPT_TEXT_DOMAIN),
-                'dashboard_title' => __('Crypto Investment Dashboard', CPT_TEXT_DOMAIN),
-                'total_portfolio_value' => __('Total Portfolio Value', CPT_TEXT_DOMAIN),
-                'total_invested' => __('Total Invested', CPT_TEXT_DOMAIN),
-                'total_profit_loss' => __('Total P&L', CPT_TEXT_DOMAIN),
-                'portfolio_change_24h' => __('24h Change', CPT_TEXT_DOMAIN),
-                'your_portfolio' => __('Your Portfolio', CPT_TEXT_DOMAIN),
-                'recent_transactions' => __('Recent Transactions', CPT_TEXT_DOMAIN),
-                'add_transaction' => __('Add Transaction', CPT_TEXT_DOMAIN),
-                'add_first_transaction' => __('Add First Transaction', CPT_TEXT_DOMAIN),
+                'login_required' => __('Acceso Requerido', 'crypto-portfolio-tracker'),
+                'login_message' => __('Necesitas iniciar sesión para ver tu portafolio de criptomonedas.', 'crypto-portfolio-tracker'),
+                'dashboard_title' => __('Dashboard de Inversiones Crypto', 'crypto-portfolio-tracker'),
+                'dashboard_subtitle' => __('Análisis completo de tu portafolio crypto', 'crypto-portfolio-tracker'),
+                'total_portfolio_value' => __('Valor Total del Portafolio', 'crypto-portfolio-tracker'),
+                'total_invested' => __('Total Invertido', 'crypto-portfolio-tracker'),
+                'total_profit_loss' => __('Ganancias y Pérdidas', 'crypto-portfolio-tracker'),
+                'portfolio_change_24h' => __('Cambio 24h', 'crypto-portfolio-tracker'),
+                'your_portfolio' => __('Tu Portafolio', 'crypto-portfolio-tracker'),
+                'recent_transactions' => __('Transacciones Recientes', 'crypto-portfolio-tracker'),
+                'add_transaction' => __('Añadir Transacción', 'crypto-portfolio-tracker'),
+                'update_prices' => __('Actualizar Precios', 'crypto-portfolio-tracker'),
+                'add_first_transaction' => __('Añadir Primera Transacción', 'crypto-portfolio-tracker'),
                 // Nuevos strings para el formulario
-                'edit_transaction' => __('Edit Transaction', CPT_TEXT_DOMAIN),
-                'cryptocurrency' => __('Cryptocurrency', CPT_TEXT_DOMAIN),
-                'type' => __('Type', CPT_TEXT_DOMAIN),
-                'date' => __('Date', CPT_TEXT_DOMAIN),
-                'buy' => __('Buy', CPT_TEXT_DOMAIN),
-                'sell' => __('Sell', CPT_TEXT_DOMAIN),
-                'price_per_unit' => __('Price per Unit ($)', CPT_TEXT_DOMAIN),
-                'price_help' => __('Price of the crypto at that time', CPT_TEXT_DOMAIN),
-                'exact_quantity' => __('Exact Quantity Received', CPT_TEXT_DOMAIN),
-                'quantity_help' => __('Exact quantity you received (according to your exchange)', CPT_TEXT_DOMAIN),
-                'total_invested' => __('Total Amount Invested ($)', CPT_TEXT_DOMAIN),
-                'amount_help' => __('Total amount you spent (including fees)', CPT_TEXT_DOMAIN),
-                'verification' => __('Verification: ', CPT_TEXT_DOMAIN),
-                'fee_note' => __('💡 The total amount may be different due to exchange fees', CPT_TEXT_DOMAIN),
-                'exchange_optional' => __('Exchange (optional)', CPT_TEXT_DOMAIN),
-                'notes_optional' => __('Notes (optional)', CPT_TEXT_DOMAIN),
-                'notes_placeholder' => __('Additional notes...', CPT_TEXT_DOMAIN),
-                'update_transaction' => __('Update Transaction', CPT_TEXT_DOMAIN),
-                'amount' => __('Amount', CPT_TEXT_DOMAIN),
-                'invested' => __('Invested', CPT_TEXT_DOMAIN),
-                'avg_price' => __('Avg Price', CPT_TEXT_DOMAIN),
-                'current_price' => __('Current Price', CPT_TEXT_DOMAIN),
-                'current_value' => __('Current Value', CPT_TEXT_DOMAIN),
-                'quantity' => __('Quantity', CPT_TEXT_DOMAIN),
-                'price' => __('Price', CPT_TEXT_DOMAIN),
-                'total' => __('Total', CPT_TEXT_DOMAIN),
-                'actions' => __('Actions', CPT_TEXT_DOMAIN),
-                'value' => __('Value', CPT_TEXT_DOMAIN),
-                'no_data' => __('No data to show', CPT_TEXT_DOMAIN),
-                'charts_loading' => __('Charts are loading... If they don\'t appear, reload the page.', CPT_TEXT_DOMAIN),
+                'edit_transaction' => __('Editar Transacción', 'crypto-portfolio-tracker'),
+                'cryptocurrency' => __('Criptomoneda', 'crypto-portfolio-tracker'),
+                'type' => __('Tipo', 'crypto-portfolio-tracker'),
+                'date' => __('Fecha', 'crypto-portfolio-tracker'),
+                'buy' => __('Compra', 'crypto-portfolio-tracker'),
+                'sell' => __('Venta', 'crypto-portfolio-tracker'),
+                'price_per_unit' => __('Precio por Unidad ($)', 'crypto-portfolio-tracker'),
+                'price_help' => __('Precio de la crypto en ese momento', 'crypto-portfolio-tracker'),
+                'exact_quantity' => __('Cantidad Exacta Recibida', 'crypto-portfolio-tracker'),
+                'quantity_help' => __('Cantidad exacta que recibiste (según tu exchange)', 'crypto-portfolio-tracker'),
+                'total_invested' => __('Monto Total Invertido ($)', 'crypto-portfolio-tracker'),
+                'amount_help' => __('Monto total que gastaste (incluyendo fees)', 'crypto-portfolio-tracker'),
+                'verification' => __('Verificación: ', 'crypto-portfolio-tracker'),
+                'fee_note' => __('💡 El monto total puede ser diferente debido a fees del exchange', 'crypto-portfolio-tracker'),
+                'exchange_optional' => __('Exchange (opcional)', 'crypto-portfolio-tracker'),
+                'notes_optional' => __('Notas (opcional)', 'crypto-portfolio-tracker'),
+                'notes_placeholder' => __('Notas adicionales...', 'crypto-portfolio-tracker'),
+                'update_transaction' => __('Actualizar Transacción', 'crypto-portfolio-tracker'),
+                'amount' => __('Monto', 'crypto-portfolio-tracker'),
+                'invested' => __('Invertido', 'crypto-portfolio-tracker'),
+                'avg_price' => __('Precio Promedio', 'crypto-portfolio-tracker'),
+                'current_price' => __('Precio Actual', 'crypto-portfolio-tracker'),
+                'current_value' => __('Valor Actual', 'crypto-portfolio-tracker'),
+                'quantity' => __('Cantidad', 'crypto-portfolio-tracker'),
+                'price' => __('Precio', 'crypto-portfolio-tracker'),
+                'total' => __('Total', 'crypto-portfolio-tracker'),
+                'actions' => __('Acciones', 'crypto-portfolio-tracker'),
+                'value' => __('Valor', 'crypto-portfolio-tracker'),
+                'crypto' => __('Crypto', 'crypto-portfolio-tracker'),
+                'no_data' => __('No hay datos para mostrar', 'crypto-portfolio-tracker'),
+                'loading' => __('Cargando portfolio...', 'crypto-portfolio-tracker'),
+                'charts_loading' => __('Los gráficos se están cargando... Si no aparecen, recarga la página.', 'crypto-portfolio-tracker'),
                 
                 // AÑADIDOS: Mensajes de error específicos para debugging
-                'error_loading_portfolio' => __('Error loading portfolio data', CPT_TEXT_DOMAIN),
-                'error_api_connection' => __('Could not connect to API', CPT_TEXT_DOMAIN),
-                'error_insufficient_permissions' => __('You do not have permission to view this content', CPT_TEXT_DOMAIN),
-                'error_not_logged_in' => __('You must be logged in to access this feature', CPT_TEXT_DOMAIN),
+                'error_loading_portfolio' => __('Error al cargar datos del portafolio', 'crypto-portfolio-tracker'),
+                'error_api_connection' => __('No se pudo conectar a la API', 'crypto-portfolio-tracker'),
+                'error_insufficient_permissions' => __('No tienes permisos para ver este contenido', 'crypto-portfolio-tracker'),
+                'error_not_logged_in' => __('Debes estar conectado para acceder a esta función', 'crypto-portfolio-tracker'),
             )
         ));
 
@@ -308,7 +312,7 @@ class CryptoPortfolioTracker {
     }
 
     /**
-     * FUNCIÓN CORREGIDA: Shortcode sin restricciones de permisos en el nivel de carga
+     * FUNCIÓN CORREGIDA: Shortcode manteniendo ID correcto y asegurando carga de scripts
      */
     public function render_dashboard_shortcode($atts) {
         $atts = shortcode_atts(array(
@@ -324,9 +328,9 @@ class CryptoPortfolioTracker {
         // CAMBIO IMPORTANTE: Asegurar que los scripts se cargan cuando se renderiza el shortcode
         $this->enqueue_scripts();
 
-        // Contenedor para React con datos adicionales para debugging
+        // Contenedor para React con ID CORRECTO que busca el JavaScript
         $container_atts = array(
-            'id' => 'crypto-portfolio-dashboard',
+            'id' => 'crypto-portfolio-dashboard', // ID CORRECTO que busca dashboard.js
             'data-user-id' => esc_attr($atts['user_id']),
             'data-logged-in' => is_user_logged_in() ? '1' : '0',
             'data-can-read' => current_user_can('read') ? '1' : '0',
@@ -335,7 +339,7 @@ class CryptoPortfolioTracker {
 
         $container_html = '<div';
         foreach ($container_atts as $key => $value) {
-            $container_html .= ' ' . $key . '="' . $value . '"';
+            $container_html .= ' ' . $key . '="' . esc_attr($value) . '"';
         }
         $container_html .= '></div>';
 
@@ -345,16 +349,16 @@ class CryptoPortfolioTracker {
     private function render_login_form() {
         ob_start(); ?>
         <div class="crypto-login-wrapper">
-            <h3><?php esc_html_e('Access to your Crypto Portfolio', CPT_TEXT_DOMAIN); ?></h3>
-            <p><?php esc_html_e('Log in or register to manage your cryptocurrency portfolio.', CPT_TEXT_DOMAIN); ?></p>
+            <h3><?php esc_html_e('Acceso a tu Portafolio Crypto', 'crypto-portfolio-tracker'); ?></h3>
+            <p><?php esc_html_e('Inicia sesión o regístrate para gestionar tu portafolio de criptomonedas.', 'crypto-portfolio-tracker'); ?></p>
 
             <div class="crypto-auth-buttons">
                 <a href="<?php echo esc_url(wp_login_url(get_permalink())); ?>" class="button button-primary">
-                    <?php esc_html_e('Log In', CPT_TEXT_DOMAIN); ?>
+                    <?php esc_html_e('Iniciar Sesión', 'crypto-portfolio-tracker'); ?>
                 </a>
                 <?php if (get_option('users_can_register')): ?>
                 <a href="<?php echo esc_url(wp_registration_url()); ?>" class="button">
-                    <?php esc_html_e('Register', CPT_TEXT_DOMAIN); ?>
+                    <?php esc_html_e('Registrarse', 'crypto-portfolio-tracker'); ?>
                 </a>
                 <?php endif; ?>
             </div>
@@ -382,8 +386,8 @@ class CryptoPortfolioTracker {
 
     public function add_admin_menu() {
         add_menu_page(
-            __('Crypto Portfolio', CPT_TEXT_DOMAIN),
-            __('Crypto Portfolio', CPT_TEXT_DOMAIN),
+            __('Crypto Portfolio', 'crypto-portfolio-tracker'),
+            __('Crypto Portfolio', 'crypto-portfolio-tracker'),
             'manage_options',
             'crypto-portfolio-tracker',
             array($this, 'admin_page'),
@@ -393,8 +397,8 @@ class CryptoPortfolioTracker {
 
         add_submenu_page(
             'crypto-portfolio-tracker',
-            __('Settings', CPT_TEXT_DOMAIN),
-            __('Settings', CPT_TEXT_DOMAIN),
+            __('Configuración', 'crypto-portfolio-tracker'),
+            __('Configuración', 'crypto-portfolio-tracker'),
             'manage_options',
             'crypto-portfolio-settings',
             array($this, 'settings_page')
@@ -406,7 +410,7 @@ class CryptoPortfolioTracker {
         if (file_exists($file)) {
             include $file;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Crypto Portfolio', CPT_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Admin dashboard file not found.', CPT_TEXT_DOMAIN) . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Crypto Portfolio', 'crypto-portfolio-tracker') . '</h1><p>' . esc_html__('Archivo del dashboard de administración no encontrado.', 'crypto-portfolio-tracker') . '</p></div>';
         }
     }
 
@@ -415,7 +419,7 @@ class CryptoPortfolioTracker {
         if (file_exists($file)) {
             include $file;
         } else {
-            echo '<div class="wrap"><h1>' . esc_html__('Settings', CPT_TEXT_DOMAIN) . '</h1><p>' . esc_html__('Settings file not found.', CPT_TEXT_DOMAIN) . '</p></div>';
+            echo '<div class="wrap"><h1>' . esc_html__('Configuración', 'crypto-portfolio-tracker') . '</h1><p>' . esc_html__('Archivo de configuración no encontrado.', 'crypto-portfolio-tracker') . '</p></div>';
         }
     }
 }
