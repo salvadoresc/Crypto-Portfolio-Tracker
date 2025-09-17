@@ -168,7 +168,7 @@ class CPT_API_Handler {
         if (!is_user_logged_in()) {
             return new WP_Error(
                 'not_logged_in',
-                __('You must be logged in to access this resource', 'Crypto-Portfolio-Tracker'),
+                __('You must be logged in to access this resource', 'crypto-portfolio-tracker'),
                 array('status' => 401)
             );
         }
@@ -177,7 +177,7 @@ class CPT_API_Handler {
         if (!current_user_can('read')) {
             return new WP_Error(
                 'insufficient_permissions',
-                __('You do not have permission to view this content', 'Crypto-Portfolio-Tracker'),
+                __('You do not have permission to view this content', 'crypto-portfolio-tracker'),
                 array('status' => 403)
             );
         }
@@ -192,7 +192,7 @@ class CPT_API_Handler {
         if (!is_user_logged_in()) {
             return new WP_Error(
                 'not_logged_in',
-                __('You must be logged in to perform this action', 'Crypto-Portfolio-Tracker'),
+                __('You must be logged in to perform this action', 'crypto-portfolio-tracker'),
                 array('status' => 401)
             );
         }
@@ -201,7 +201,7 @@ class CPT_API_Handler {
         if (!current_user_can('read')) {
             return new WP_Error(
                 'insufficient_permissions',
-                __('You do not have permission to manage portfolio data', 'Crypto-Portfolio-Tracker'),
+                __('You do not have permission to manage portfolio data', 'crypto-portfolio-tracker'),
                 array('status' => 403)
             );
         }
@@ -216,7 +216,7 @@ class CPT_API_Handler {
         if (!is_user_logged_in()) {
             return new WP_Error(
                 'not_logged_in',
-                __('You must be logged in to manage transactions', 'Crypto-Portfolio-Tracker'),
+                __('You must be logged in to manage transactions', 'crypto-portfolio-tracker'),
                 array('status' => 401)
             );
         }
@@ -225,7 +225,7 @@ class CPT_API_Handler {
         if (!current_user_can('read')) {
             return new WP_Error(
                 'insufficient_permissions',
-                __('You do not have permission to manage transactions', 'Crypto-Portfolio-Tracker'),
+                __('You do not have permission to manage transactions', 'crypto-portfolio-tracker'),
                 array('status' => 403)
             );
         }
@@ -238,7 +238,7 @@ class CPT_API_Handler {
             if (class_exists('CPT_Validation') && !CPT_Validation::user_can_add_transaction($user_id)) {
                 return new WP_Error(
                     'transaction_limit_exceeded',
-                    __('You have reached the maximum number of transactions allowed', 'Crypto-Portfolio-Tracker'),
+                    __('You have reached the maximum number of transactions allowed', 'crypto-portfolio-tracker'),
                     array('status' => 429)
                 );
             }
@@ -330,7 +330,7 @@ class CPT_API_Handler {
         $total_invested = (float) $request->get_param('total_invested');
 
         if (empty($coin_id) || $total_amount <= 0 || $avg_buy_price < 0 || $total_invested < 0) {
-            return $this->fail('invalid_data', __('Invalid portfolio data', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('invalid_data', __('Invalid portfolio data', 'crypto-portfolio-tracker'));
         }
 
         $coin_data = array(
@@ -345,10 +345,10 @@ class CPT_API_Handler {
         $saved = $this->database->update_portfolio_item($user_id, $coin_data);
 
         if (!$saved) {
-            return $this->fail('update_failed', __('Failed to update portfolio', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('update_failed', __('Failed to update portfolio', 'crypto-portfolio-tracker'));
         }
 
-        return $this->ok(array('message' => __('Portfolio updated successfully', 'Crypto-Portfolio-Tracker')));
+        return $this->ok(array('message' => __('Portfolio updated successfully', 'crypto-portfolio-tracker')));
     }
 
     public function clean_duplicates($request) {
@@ -358,12 +358,12 @@ class CPT_API_Handler {
             $this->database->clean_portfolio_duplicates($user_id);
             
             return $this->ok(array(
-                'message' => __('Duplicates cleaned successfully', 'Crypto-Portfolio-Tracker'),
+                'message' => __('Duplicates cleaned successfully', 'crypto-portfolio-tracker'),
                 'cleaned_count' => 'completed'
             ));
         }
         
-        return $this->fail('service_unavailable', __('Portfolio cleanup service not available', 'Crypto-Portfolio-Tracker'));
+        return $this->fail('service_unavailable', __('Portfolio cleanup service not available', 'crypto-portfolio-tracker'));
     }
 
     public function delete_portfolio_item($request) {
@@ -373,10 +373,10 @@ class CPT_API_Handler {
         $deleted = $this->database->delete_portfolio_item($user_id, $coin_id);
 
         if (!$deleted) {
-            return $this->fail('delete_failed', __('Failed to delete portfolio item', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('delete_failed', __('Failed to delete portfolio item', 'crypto-portfolio-tracker'));
         }
 
-        return $this->ok(array('message' => __('Portfolio item deleted successfully', 'Crypto-Portfolio-Tracker')));
+        return $this->ok(array('message' => __('Portfolio item deleted successfully', 'crypto-portfolio-tracker')));
     }
 
     // ================== Transacciones ==================
@@ -427,14 +427,14 @@ class CPT_API_Handler {
             if (!isset($data[$field]) || $data[$field] === '' || $data[$field] === null) {
                 error_log("CPT: Campo faltante: {$field} = " . (isset($data[$field]) ? $data[$field] : 'NOT_SET'));
                 // translators: %s is the name of the required field that is missing
-                return $this->fail('missing_field', sprintf(__('Required field missing: %s', 'Crypto-Portfolio-Tracker'), $label), 400);
+                return $this->fail('missing_field', sprintf(__('Required field missing: %s', 'crypto-portfolio-tracker'), $label), 400);
             }
         }
 
         // Validar tipo de transacción
         $transaction_type = strtolower(sanitize_text_field($data['type']));
         if (!in_array($transaction_type, array('buy', 'sell'), true)) {
-            return $this->fail('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'crypto-portfolio-tracker'), 400);
         }
 
         // Validar y sanitizar campos numéricos
@@ -443,15 +443,15 @@ class CPT_API_Handler {
         $total_cost = (float) $data['total'];   // Should be quantity * price (from frontend)
 
         if ($amount <= 0) {
-            return $this->fail('invalid_amount', __('Amount must be greater than 0', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_amount', __('Amount must be greater than 0', 'crypto-portfolio-tracker'), 400);
         }
 
         if ($price_per_coin < 0) {
-            return $this->fail('invalid_price', __('Price cannot be negative', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_price', __('Price cannot be negative', 'crypto-portfolio-tracker'), 400);
         }
 
         if ($total_cost <= 0) {
-            return $this->fail('invalid_total', __('Total must be greater than 0', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_total', __('Total must be greater than 0', 'crypto-portfolio-tracker'), 400);
         }
 
         // Sanitizar campos de texto
@@ -467,7 +467,7 @@ class CPT_API_Handler {
         if (class_exists('CPT_Validation')) {
             $valid_date = CPT_Validation::validate_date($transaction_date);
             if (!$valid_date) {
-                return $this->fail('invalid_date', __('Invalid date format', 'Crypto-Portfolio-Tracker'), 400);
+                return $this->fail('invalid_date', __('Invalid date format', 'crypto-portfolio-tracker'), 400);
             }
             $transaction_date = $valid_date;
         } else {
@@ -478,7 +478,7 @@ class CPT_API_Handler {
                 if ($dt) {
                     $transaction_date = $dt->format('Y-m-d 00:00:00');
                 } else {
-                    return $this->fail('invalid_date', __('Invalid date format. Use YYYY-MM-DD', 'Crypto-Portfolio-Tracker'), 400);
+                    return $this->fail('invalid_date', __('Invalid date format. Use YYYY-MM-DD', 'crypto-portfolio-tracker'), 400);
                 }
             }
         }
@@ -503,7 +503,7 @@ class CPT_API_Handler {
 
         // Verificar límites de transacciones si la validación está disponible
         if (class_exists('CPT_Validation') && !CPT_Validation::user_can_add_transaction($user_id)) {
-            return $this->fail('transaction_limit', __('You have reached the transaction limit', 'Crypto-Portfolio-Tracker'), 429);
+            return $this->fail('transaction_limit', __('You have reached the transaction limit', 'crypto-portfolio-tracker'), 429);
         }
 
         // Intentar guardar en la base de datos
@@ -511,7 +511,7 @@ class CPT_API_Handler {
         
         if ($result === false) {
             error_log('CPT: Error al guardar transacción en BD. Last error: ' . (isset($this->database->wpdb) ? $this->database->wpdb->last_error : 'No disponible'));
-            return $this->fail('save_failed', __('Error saving transaction to database', 'Crypto-Portfolio-Tracker'), 500);
+            return $this->fail('save_failed', __('Error saving transaction to database', 'crypto-portfolio-tracker'), 500);
         }
 
         // Obtener el ID de la transacción insertada
@@ -520,7 +520,7 @@ class CPT_API_Handler {
 
         return $this->ok(array(
             'success' => true,
-            'message' => __('Transaction added successfully', 'Crypto-Portfolio-Tracker'),
+            'message' => __('Transaction added successfully', 'crypto-portfolio-tracker'),
             'transaction_id' => $transaction_id,
             'data' => $transaction_data
         ), 201);
@@ -544,7 +544,7 @@ class CPT_API_Handler {
         // Verificar que la transacción pertenece al usuario
         $transaction = $this->database->get_transaction($user_id, $transaction_id);
         if (!$transaction) {
-            return $this->fail('not_found', __('Transaction not found', 'Crypto-Portfolio-Tracker'), 404);
+            return $this->fail('not_found', __('Transaction not found', 'crypto-portfolio-tracker'), 404);
         }
 
         // Validaciones de campos requeridos (iguales a add_transaction)
@@ -562,14 +562,14 @@ class CPT_API_Handler {
             if (!isset($data[$field]) || $data[$field] === '' || $data[$field] === null) {
                 error_log("CPT: Campo faltante en actualización: {$field} = " . (isset($data[$field]) ? $data[$field] : 'NOT_SET'));
                 // translators: %s is the name of the required field that is missing
-                return $this->fail('missing_field', sprintf(__('Required field missing: %s', 'Crypto-Portfolio-Tracker'), $label), 400);
+                return $this->fail('missing_field', sprintf(__('Required field missing: %s', 'crypto-portfolio-tracker'), $label), 400);
             }
         }
 
         // Validar tipo de transacción
         $transaction_type = strtolower(sanitize_text_field($data['type']));
         if (!in_array($transaction_type, array('buy', 'sell'), true)) {
-            return $this->fail('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_type', __('Invalid transaction type. Must be "buy" or "sell"', 'crypto-portfolio-tracker'), 400);
         }
 
         // Validar y sanitizar campos numéricos
@@ -578,15 +578,15 @@ class CPT_API_Handler {
         $total_cost = (float) $data['total'];
 
         if ($amount <= 0) {
-            return $this->fail('invalid_amount', __('Amount must be greater than 0', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_amount', __('Amount must be greater than 0', 'crypto-portfolio-tracker'), 400);
         }
 
         if ($price_per_coin < 0) {
-            return $this->fail('invalid_price', __('Price cannot be negative', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_price', __('Price cannot be negative', 'crypto-portfolio-tracker'), 400);
         }
 
         if ($total_cost <= 0) {
-            return $this->fail('invalid_total', __('Total must be greater than 0', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_total', __('Total must be greater than 0', 'crypto-portfolio-tracker'), 400);
         }
 
         // Sanitizar campos de texto
@@ -602,7 +602,7 @@ class CPT_API_Handler {
         if (class_exists('CPT_Validation')) {
             $valid_date = CPT_Validation::validate_date($transaction_date);
             if (!$valid_date) {
-                return $this->fail('invalid_date', __('Invalid date format', 'Crypto-Portfolio-Tracker'), 400);
+                return $this->fail('invalid_date', __('Invalid date format', 'crypto-portfolio-tracker'), 400);
             }
             $transaction_date = $valid_date;
         } else {
@@ -613,7 +613,7 @@ class CPT_API_Handler {
                 if ($dt) {
                     $transaction_date = $dt->format('Y-m-d 00:00:00');
                 } else {
-                    return $this->fail('invalid_date', __('Invalid date format. Use YYYY-MM-DD', 'Crypto-Portfolio-Tracker'), 400);
+                    return $this->fail('invalid_date', __('Invalid date format. Use YYYY-MM-DD', 'crypto-portfolio-tracker'), 400);
                 }
             }
         }
@@ -640,10 +640,10 @@ class CPT_API_Handler {
 
         if (!$updated) {
             error_log('CPT: Error al actualizar transacción en BD. Last error: ' . (isset($this->database->wpdb) ? $this->database->wpdb->last_error : 'No disponible'));
-            return $this->fail('update_failed', __('Failed to update transaction', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('update_failed', __('Failed to update transaction', 'crypto-portfolio-tracker'));
         }
 
-        return $this->ok(array('message' => __('Transaction updated successfully', 'Crypto-Portfolio-Tracker')));
+        return $this->ok(array('message' => __('Transaction updated successfully', 'crypto-portfolio-tracker')));
     }
 
     public function delete_transaction($request) {
@@ -653,17 +653,17 @@ class CPT_API_Handler {
         // Verificar que la transacción pertenece al usuario
         $transaction = $this->database->get_transaction($user_id, $transaction_id);
         if (!$transaction) {
-            return $this->fail('not_found', __('Transaction not found', 'Crypto-Portfolio-Tracker'), 404);
+            return $this->fail('not_found', __('Transaction not found', 'crypto-portfolio-tracker'), 404);
         }
 
         $deleted = $this->database->delete_transaction($user_id, $transaction_id);
 
         if (!$deleted) {
             error_log('CPT: Error al eliminar transacción. Last error: ' . (isset($this->database->wpdb) ? $this->database->wpdb->last_error : 'No disponible'));
-            return $this->fail('delete_failed', __('Failed to delete transaction', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('delete_failed', __('Failed to delete transaction', 'crypto-portfolio-tracker'));
         }
 
-        return $this->ok(array('message' => __('Transaction deleted successfully', 'Crypto-Portfolio-Tracker')));
+        return $this->ok(array('message' => __('Transaction deleted successfully', 'crypto-portfolio-tracker')));
     }
 
     // ================== Watchlist ==================
@@ -702,7 +702,7 @@ class CPT_API_Handler {
         }
 
         if (!isset($data['coin_id']) || !isset($data['coin_symbol'])) {
-            return $this->fail('missing_data', __('Missing required fields', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('missing_data', __('Missing required fields', 'crypto-portfolio-tracker'), 400);
         }
 
         $coin_id = $this->norm_coin_id($data['coin_id']);
@@ -718,9 +718,9 @@ class CPT_API_Handler {
         $added = $this->database->add_to_watchlist($user_id, $coin_data);
 
         if ($added) {
-            return $this->ok(array('message' => __('Added to watchlist successfully', 'Crypto-Portfolio-Tracker')));
+            return $this->ok(array('message' => __('Added to watchlist successfully', 'crypto-portfolio-tracker')));
         } else {
-            return $this->fail('add_failed', __('Failed to add to watchlist', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('add_failed', __('Failed to add to watchlist', 'crypto-portfolio-tracker'));
         }
     }
 
@@ -731,9 +731,9 @@ class CPT_API_Handler {
         $removed = $this->database->remove_from_watchlist($user_id, $coin_id);
 
         if ($removed) {
-            return $this->ok(array('message' => __('Removed from watchlist successfully', 'Crypto-Portfolio-Tracker')));
+            return $this->ok(array('message' => __('Removed from watchlist successfully', 'crypto-portfolio-tracker')));
         } else {
-            return $this->fail('remove_failed', __('Failed to remove from watchlist', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('remove_failed', __('Failed to remove from watchlist', 'crypto-portfolio-tracker'));
         }
     }
 
@@ -742,11 +742,11 @@ class CPT_API_Handler {
         $query = sanitize_text_field($request->get_param('q'));
 
         if (empty($query) || strlen($query) < 2) {
-            return $this->fail('query_too_short', __('Search query must be at least 2 characters long', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('query_too_short', __('Search query must be at least 2 characters long', 'crypto-portfolio-tracker'));
         }
 
         if (!$this->coingecko) {
-            return $this->fail('api_unavailable', __('CoinGecko API not available', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('api_unavailable', __('CoinGecko API not available', 'crypto-portfolio-tracker'));
         }
 
         $results = $this->coingecko->search_coins($query);
@@ -762,11 +762,11 @@ class CPT_API_Handler {
         $ids = sanitize_text_field($request->get_param('ids'));
 
         if (empty($ids)) {
-            return $this->fail('missing_ids', __('No valid coin IDs provided', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('missing_ids', __('No valid coin IDs provided', 'crypto-portfolio-tracker'), 400);
         }
 
         if (!$this->coingecko) {
-            return $this->fail('api_unavailable', __('CoinGecko API service not available', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('api_unavailable', __('CoinGecko API service not available', 'crypto-portfolio-tracker'));
         }
 
         $coin_ids = explode(',', $ids);
@@ -775,7 +775,7 @@ class CPT_API_Handler {
         $coin_ids = array_filter($coin_ids, function($id) { return !empty($id); });
         
         if (empty($coin_ids)) {
-            return $this->fail('invalid_ids', __('No valid coin IDs provided', 'Crypto-Portfolio-Tracker'), 400);
+            return $this->fail('invalid_ids', __('No valid coin IDs provided', 'crypto-portfolio-tracker'), 400);
         }
 
         $prices = $this->coingecko->get_current_prices($coin_ids);
@@ -791,7 +791,7 @@ class CPT_API_Handler {
         $limit = (int) $request->get_param('limit') ?: 10;
 
         if (!$this->coingecko) {
-            return $this->fail('api_unavailable', __('CoinGecko API service not available', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('api_unavailable', __('CoinGecko API service not available', 'crypto-portfolio-tracker'));
         }
 
         $trending = $this->coingecko->get_trending_coins($limit);
@@ -897,7 +897,7 @@ class CPT_API_Handler {
         // Verificar que se subió un archivo
         $files = $request->get_file_params();
         if (empty($files['csv_file'])) {
-            return $this->fail('no_file', __('No CSV file uploaded', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('no_file', __('No CSV file uploaded', 'crypto-portfolio-tracker'));
         }
 
         $file = $files['csv_file'];
@@ -905,23 +905,23 @@ class CPT_API_Handler {
         // Validar tipo de archivo
         $allowed_types = array('text/csv', 'text/plain', 'application/csv');
         if (!in_array($file['type'], $allowed_types)) {
-            return $this->fail('invalid_file_type', __('Only CSV files are allowed', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('invalid_file_type', __('Only CSV files are allowed', 'crypto-portfolio-tracker'));
         }
 
         // Validar tamaño (máx 2MB)
         if ($file['size'] > 2097152) {
-            return $this->fail('file_too_large', __('File size must be less than 2MB', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('file_too_large', __('File size must be less than 2MB', 'crypto-portfolio-tracker'));
         }
 
         // Leer y procesar el archivo CSV
         $csv_data = file_get_contents($file['tmp_name']);
         if ($csv_data === false) {
-            return $this->fail('read_error', __('Failed to read CSV file', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('read_error', __('Failed to read CSV file', 'crypto-portfolio-tracker'));
         }
 
         $lines = str_getcsv($csv_data, "\n");
         if (empty($lines)) {
-            return $this->fail('empty_file', __('CSV file appears to be empty or invalid', 'Crypto-Portfolio-Tracker'));
+            return $this->fail('empty_file', __('CSV file appears to be empty or invalid', 'crypto-portfolio-tracker'));
         }
 
         // Procesar header
@@ -946,7 +946,7 @@ class CPT_API_Handler {
             }
             if (!$found && $field !== 'coin_id') { // coin_id puede ser opcional si hay coin_symbol
                 // translators: %s is the name of the required column that is missing from the CSV file
-                return $this->fail('missing_column', sprintf(__('Required column "%s" not found in CSV', 'Crypto-Portfolio-Tracker'), $field));
+                return $this->fail('missing_column', sprintf(__('Required column "%s" not found in CSV', 'crypto-portfolio-tracker'), $field));
             }
         }
 
@@ -978,7 +978,7 @@ class CPT_API_Handler {
             if (empty($coin_symbol) || !in_array($transaction_type, array('buy', 'sell')) || $amount <= 0 || $price_per_coin < 0) {
                 if (count($errors) < $max_errors) {
                     // translators: %d is the line number in the CSV file that contains invalid data
-                    $errors[] = sprintf(__('Line %d: Invalid data', 'Crypto-Portfolio-Tracker'), $line_num + 2);
+                    $errors[] = sprintf(__('Line %d: Invalid data', 'crypto-portfolio-tracker'), $line_num + 2);
                 }
                 continue;
             }
@@ -992,7 +992,7 @@ class CPT_API_Handler {
                 if (!$valid_date) {
                     if (count($errors) < $max_errors) {
                         // translators: %d is the line number in the CSV file that contains invalid date format
-                        $errors[] = sprintf(__('Line %d: Invalid date format', 'Crypto-Portfolio-Tracker'), $line_num + 2);
+                        $errors[] = sprintf(__('Line %d: Invalid date format', 'crypto-portfolio-tracker'), $line_num + 2);
                     }
                     continue;
                 }
@@ -1013,7 +1013,7 @@ class CPT_API_Handler {
                 'total' => $total_cost,
                 'date' => $transaction_date,
                 // translators: %s is the current date and time when the CSV import was performed
-                'notes' => sprintf(__('Imported from CSV on %s', 'Crypto-Portfolio-Tracker'), current_time('Y-m-d H:i:s'))
+                'notes' => sprintf(__('Imported from CSV on %s', 'crypto-portfolio-tracker'), current_time('Y-m-d H:i:s'))
             );
 
             // Intentar añadir la transacción
@@ -1024,7 +1024,7 @@ class CPT_API_Handler {
             } else {
                 if (count($errors) < $max_errors) {
                     // translators: %d is the line number in the CSV file where transaction save failed
-                    $errors[] = sprintf(__('Line %d: Failed to save transaction', 'Crypto-Portfolio-Tracker'), $line_num + 2);
+                    $errors[] = sprintf(__('Line %d: Failed to save transaction', 'crypto-portfolio-tracker'), $line_num + 2);
                 }
             }
         }
@@ -1033,13 +1033,13 @@ class CPT_API_Handler {
             'imported' => $imported,
             'total_lines' => count($lines),
             // translators: %d is the number of transactions that were successfully imported from the CSV file
-            'message' => sprintf(__('Imported %d transactions successfully', 'Crypto-Portfolio-Tracker'), $imported)
+            'message' => sprintf(__('Imported %d transactions successfully', 'crypto-portfolio-tracker'), $imported)
         );
 
         if (!empty($errors)) {
             $result['errors'] = $errors;
             if (count($errors) >= $max_errors) {
-                $result['errors'][] = __('... and more errors', 'Crypto-Portfolio-Tracker');
+                $result['errors'][] = __('... and more errors', 'crypto-portfolio-tracker');
             }
         }
 
